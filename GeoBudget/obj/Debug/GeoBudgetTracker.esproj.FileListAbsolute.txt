@@ -1,0 +1,2 @@
+C:\Users\16472\Documents\GitHub\GeoBudgetTracker\SentimentAnalysis\obj\Debug\GeoBudgetTracker.esproj.CoreCompileInputs.cache
+C:\Users\16472\Documents\GitHub\GeoBudgetTracker\GeoBudget\obj\Debug\GeoBudgetTracker.esproj.CoreCompileInputs.cache
