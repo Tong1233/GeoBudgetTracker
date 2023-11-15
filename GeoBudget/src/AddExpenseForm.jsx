@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 
 const AddExpenseForm = ({ onExpenseAdded }) => {
+
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [name, setname] = useState('');
+
+    const currentDate = new Date().toLocaleDateString('en-CA').split('T')[0];// Get the current date in the format "YYYY-MM-DD"
+    const [date, setdate] = useState(currentDate);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -13,7 +17,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ name, amount: parseFloat(amount), description }),
+            body: JSON.stringify({ date, name, amount: parseFloat(amount), description }),
         })
             .then(response => response.json())
             .then(data => {
@@ -25,6 +29,18 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
 
     return (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '20vw' }}>
+
+            <div style={{ marginBottom: '10px', width: '100%' }}>
+                <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
+                    Date:
+                    <input
+                        type="text"
+                        value={date}
+                        onChange={(e) => setdate(e.target.value)}
+                        style={{ width: '100%', padding: '5px' }}
+                    />
+                </label>
+            </div>
 
             <div style={{ marginBottom: '10px', width: '100%' }}>
                 <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>

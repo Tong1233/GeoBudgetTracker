@@ -34,39 +34,72 @@ const ExpensesComponent = () => {
     return (
         <div style={{ display: 'flex' }}>
             {/* Left side with input form */}
-            <div style={{ flex: 1, padding: '0px' }}>
+            <div style={{ flex: 1}}>
                 <h2>New Expense</h2>
                 <AddExpenseForm onExpenseAdded={handleExpenseAdded} />
             </div>
 
             {/* Right side with expenses table */}
-            <div style={{ flex: 2, marginRight: '20px' }}>
+            <div style={{ flex: 2, marginRight: '20px'}}>
                 <h2>Expenses</h2>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <div style={styles.tableContainer}>
+                <table style={styles.table}>
                     <thead>
                         <tr>
-                            <th style={{ border: '1px solid black', padding: '8px' }}>Name</th>
-                            <th style={{ border: '1px solid black', padding: '8px' }}>Amount</th>
-                            <th style={{ border: '1px solid black', padding: '8px' }}>Description</th>
-                            <th style={{ border: '1px solid black', padding: '8px' }}>Actions</th>
+                            <th style={styles.tableCell}>Date</th>
+                            <th style={styles.tableCell}>Name</th>
+                            <th style={styles.tableCell}>Amount</th>
+                            <th style={styles.tableCell}>Description</th>
+                            <th style={{...styles.tableCell, width: '4vw'}}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {expenses.map((expense) => (
                             <tr key={expense.id}>
-                                <td style={{ border: '1px solid black', padding: '0px', textAlign: 'center' }}>{expense.name}</td>
-                                <td style={{ border: '1px solid black', padding: '0px', textAlign: 'center' }}>$ {expense.amount}</td>
-                                <td style={{ border: '1px solid black', padding: '0px', textAlign: 'center' }}>{expense.description}</td>
-                                <td style={{ border: '1px solid black', padding: '0px', textAlign: 'center', width: '4vw' }}>
+                                <td style={{ ...styles.tableCell, padding: '0px' }}>{expense.date}</td>
+                                <td style={{ ...styles.tableCell, padding: '0px' }}>{expense.name}</td>
+                                <td style={{ ...styles.tableCell, padding: '0px' }}>$ {expense.amount}</td>
+                                <td style={{ ...styles.tableCell, padding: '0px' }}>{expense.description}</td>
+                                <td style={{ ...styles.tableCell, padding: '0px', width: '4vw' }}>
                                     <button onClick={() => handleDeleteExpense(expense.id)} style={{ padding: '10px 20px', fontSize: '14px' }}>Delete</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
     );
+};
+
+// Add this style section within your component file
+const styles = {
+
+    tableContainer: {
+        maxHeight: '80vh',  // Adjust the maximum height as needed
+        //maxWidth: '60vw',  //max width
+        overflowY: 'auto',  // Vertical scrollbar if content overflows
+    },
+
+    // Add this new style for the table
+    table: {
+        border: '1px solid black',
+        //maxWidth: '70vw',  // Adjust the width as needed
+        borderCollapse: 'collapse',
+        overflow: 'auto'
+    },
+
+    // Add this new style for the table cells
+    tableCell: {
+        border: '1px solid black',
+        padding: '8px',
+        textAlign: 'center',
+        width: '20vw',
+        maxWidth: '20vw',
+        overflow: 'auto',  // Add this line for the cells
+     
+    },
 };
 
 export default ExpensesComponent;

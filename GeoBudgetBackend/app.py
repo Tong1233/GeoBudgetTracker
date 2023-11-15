@@ -16,6 +16,7 @@ db = SQLAlchemy(app)
 # Define a model for the 'Expense' table in the database
 class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # Primary key column
+    date = db.Column(db.String(255), nullable=False)  # Name column, cannot be null
     name = db.Column(db.String(255), nullable=False)  # Name column, cannot be null
     amount = db.Column(db.Float, nullable=False)  # Amount column, cannot be null
     description = db.Column(db.String(255), nullable=True)  # Description column, can be null
@@ -27,14 +28,14 @@ def expenses():
     if request.method == 'GET':
         expenses = Expense.query.all()
         # Return a JSON response containing information about each expense
-        return jsonify([{'id': expense.id, 'name': expense.name, 'amount' : expense.amount, 'description' : expense.description} for expense in expenses])
+        return jsonify([{'id': expense.id, 'date': expense.date, 'name': expense.name, 'amount' : expense.amount, 'description' : expense.description} for expense in expenses])
     
     # If the request method is POST, add a new expense to the database
     elif request.method == 'POST':
         # Extract JSON data from the request
         data = request.get_json()
         # Create a new 'Expense' object using the data
-        new_expense = Expense(name=data['name'], amount=data['amount'], description=data.get('description'))
+        new_expense = Expense(date=data['date'], name=data['name'], amount=data['amount'], description=data.get('description'))
         # Add the new expense to the database session
         db.session.add(new_expense)
         # Commit the changes to the database
