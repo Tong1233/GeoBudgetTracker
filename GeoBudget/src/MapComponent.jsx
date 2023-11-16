@@ -27,7 +27,7 @@ class LoadScriptOnlyIfNeeded extends LoadScript {
     }
 }
 
-const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation}) => {
+const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation, CallBackLocation}) => {
 
     const [isScriptLoaded, setScriptLoaded] = useState(false);
     //const [currentLocation, setCurrentLocation] = useState(null);
@@ -41,7 +41,7 @@ const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation
     const handleMapMovement = (event) => {
         const { latLng } = event;
         setCurrentLocation({ lat: latLng.lat(), lng: latLng.lng() });
-        //onLocationSet({ lat: latLng.lat(), lng: latLng.lng() });
+        CallBackLocation({ lat: latLng.lat(), lng: latLng.lng() });
     };
 
     const getCurrentLocation = () => {

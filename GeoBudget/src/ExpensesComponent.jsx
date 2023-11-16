@@ -27,6 +27,18 @@ const ExpensesComponent = () => {
             .catch(error => console.error('Error fetching expenses:', error));
     };
 
+    function calculateTotalAmount(expenses) {
+        let totalAmount = 0;
+
+        for (let i = 0; i < expenses.length; i++) {
+            totalAmount += expenses[i].amount;
+        }
+
+        return totalAmount;
+    }
+
+    const totalAmount = calculateTotalAmount(expenses);
+
     useEffect(() => {
         fetchExpenses();
     }, []);
@@ -65,6 +77,11 @@ const ExpensesComponent = () => {
                                 </td>
                             </tr>
                         ))}
+                            {/* Totals row */}
+                            <tr>
+                                <td style={styles.boldTableCell} colSpan={2}>Total</td>
+                                <td style={{ ...styles.boldTableCell, textAlign: 'center' }}>$ {totalAmount}</td>
+                            </tr>
                     </tbody>
                     </table>
                 </div>
@@ -99,6 +116,16 @@ const styles = {
         maxWidth: '20vw',
         overflow: 'auto',  // Add this line for the cells
      
+    },
+
+    boldTableCell: {
+        border: '1px solid black',
+        padding: '8px',
+        textAlign: 'right',
+        width: '20vw',
+        maxWidth: '20vw',
+        overflow: 'auto',  // Add this line for the cells
+        fontWeight: 'bold',
     },
 };
 

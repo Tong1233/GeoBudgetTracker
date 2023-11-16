@@ -20,6 +20,8 @@ class Expense(db.Model):
     name = db.Column(db.String(255), nullable=False)  # Name column, cannot be null
     amount = db.Column(db.Float, nullable=False)  # Amount column, cannot be null
     description = db.Column(db.String(255), nullable=True)  # Description column, can be null
+    lat = db.Column(db.Float, nullable=True)  # lat can be null
+    lng = db.Column(db.Float, nullable=True)  # lng can be null
 
 # Define a route for the '/expenses' URL with support for GET and POST methods
 @app.route('/expenses', methods=['GET', 'POST'])
@@ -35,7 +37,7 @@ def expenses():
         # Extract JSON data from the request
         data = request.get_json()
         # Create a new 'Expense' object using the data
-        new_expense = Expense(date=data['date'], name=data['name'], amount=data['amount'], description=data.get('description'))
+        new_expense = Expense(date=data['date'], name=data['name'], amount=data['amount'], description=data.get('description'), lat=data.get('lat'), lng=data.get('lng'))
         # Add the new expense to the database session
         db.session.add(new_expense)
         # Commit the changes to the database
