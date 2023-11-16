@@ -40,7 +40,7 @@ const ExpensesComponent = () => {
             </div>
 
             {/* Right side with expenses table */}
-            <div style={{ flex: 2, marginRight: '20px'}}>
+            <div style={{ flex: 2, marginRight: '10px', width: '50%'}}>
                 <h2>Expenses</h2>
                 <div style={styles.tableContainer}>
                 <table style={styles.table}>

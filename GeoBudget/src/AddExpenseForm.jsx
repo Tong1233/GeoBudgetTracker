@@ -1,13 +1,38 @@
 import React, { useState } from 'react';
+import MapComponent from './MapComponent';
 
 const AddExpenseForm = ({ onExpenseAdded }) => {
 
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [name, setname] = useState('');
+    const [setLocationMode, setSetLocationMode] = useState(false);
 
     const currentDate = new Date().toLocaleDateString('en-CA').split('T')[0];// Get the current date in the format "YYYY-MM-DD"
     const [date, setdate] = useState(currentDate);
+    const [currentLocation, setCurrentLocation] = useState(null);
+
+    const handleMapClick = (event) => {
+        const { latLng } = event;
+        setCurrentLocation({ lat: latLng.lat(), lng: latLng.lng() });
+        //onLocationSet({ lat: latLng.lat(), lng: latLng.lng() });
+    };
+
+    const getCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCurrentLocation({ lat: latitude, lng: longitude });
+                },
+                (error) => {
+                    console.error('Error getting current location:', error);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -28,9 +53,9 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '20vw' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '23vw' }}>
 
-            <div style={{ marginBottom: '10px', width: '100%' }}>
+            <div style={{ marginBottom: '2px', width: '100%' }}>
                 <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
                     Date:
                     <input
@@ -42,7 +67,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                 </label>
             </div>
 
-            <div style={{ marginBottom: '10px', width: '100%' }}>
+            <div style={{ marginBottom: '2px', width: '100%' }}>
                 <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
                     Name:
                     <input
@@ -55,7 +80,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                 </label>
             </div>
 
-            <div style={{ marginBottom: '10px', width: '100%' }}>
+            <div style={{ marginBottom: '2px', width: '100%' }}>
                 <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
                     Amount:
                     <input
@@ -68,7 +93,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                 </label>
             </div>
 
-            <div style={{ marginBottom: '10px', width: '100%' }}>
+            <div style={{ marginBottom: '2px', width: '100%' }}>
                 <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
                     Description:
                     <textarea
@@ -81,8 +106,25 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                     />
                 </label>
             </div>
-
-            <button type="submit" style={{ width: '50%', padding: '10px', margin: 'auto' }}>Add Expense</button>
+            <label style={{ marginBottom: '5px', textAlign: 'center', width: '100%' }}>     
+                <button
+                    onClick={getCurrentLocation}
+                    style={{
+                        background: 'transparent',
+                        border: '1px solid black',
+                        color: 'black', // Change the color to match your design
+                        fontSize: '14px', // Adjust the font size
+                        padding: '5px', // Adjust the padding
+                        cursor: 'pointer',
+                    }}
+                >
+                    Set Location (Optional)
+                </button>
+            </label>
+            <MapComponent width="24vw" height="35vh" zoom={9} currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}/>
+            <div style={{ marginTop: '10px', width: '40%' }}>
+                <button type="submit" style={{ width: '100%', padding: '10px', margin: 'auto' }}>Add Expense</button>
+            </div>
         </form>
     );
 };

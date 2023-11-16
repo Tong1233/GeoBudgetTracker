@@ -27,35 +27,65 @@ class LoadScriptOnlyIfNeeded extends LoadScript {
     }
 }
 
-const MapComponent = () => {
+const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation}) => {
 
     const [isScriptLoaded, setScriptLoaded] = useState(false);
+    //const [currentLocation, setCurrentLocation] = useState(null);
 
     useEffect(() => {
-        // Check if the Google Maps API is already loaded
         if (window.google && window.google.maps) {
             setScriptLoaded(true);
-            //onGoogleMapsApiLoad(true); // Map is loaded
-            console.log('Google Maps API already loaded!');
-            return;
         }
-    }, );
+    }, []);
+
+    const handleMapMovement = (event) => {
+        const { latLng } = event;
+        setCurrentLocation({ lat: latLng.lat(), lng: latLng.lng() });
+        //onLocationSet({ lat: latLng.lat(), lng: latLng.lng() });
+    };
+
+    const getCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCurrentLocation({ lat: latitude, lng: longitude });
+                },
+                (error) => {
+                    console.error('Error getting current location:', error);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+    };
 
     const containerStyle = {
-        width: '60vw', // Adjust the width as needed
-        height: '60vh', // Adjust the height as needed
+        width: width || '60vw', // Use the provided width or a default value
+        height: height || '60vh', // Use the provided height or a default value
         margin: 'auto', // Center the map horizontally
     };
 
     const center = {
-        lat: -34.397,
-        lng: 150.644,
+        lat: currentLocation?.lat || 43.70, // Latitude of Toronto, Canada
+        lng: currentLocation?.lng ||-79.42, // Longitude of Toronto, Canada
     };
 
     return (
         <LoadScriptOnlyIfNeeded googleMapsApiKey="AIzaSyALYG3CifqXPLPfKvDc2cLwsx92ttWOoJ0">
-            <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={8}>
-                <Marker position={center} />
+            <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={center}
+                zoom={zoom || 11}
+                onClick={handleMapMovement}
+            >
+                {currentLocation && (
+                    <Marker
+                        position={currentLocation}
+                        draggable={true} // Allow the marker to be dragged
+                        onDragEnd={handleMapMovement} // Handle drag end event
+                    />
+                )}
             </GoogleMap>
         </LoadScriptOnlyIfNeeded>
     );
