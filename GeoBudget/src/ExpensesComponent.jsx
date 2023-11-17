@@ -23,7 +23,7 @@ const ExpensesComponent = () => {
     const fetchExpenses = () => {
         fetch('http://localhost:5000/expenses')
             .then(response => response.json())
-            .then(data => setExpenses(data))
+            .then(data => { setExpenses(data), localStorage.setItem('expenses', JSON.stringify(data)) })
             .catch(error => console.error('Error fetching expenses:', error));
     };
 
@@ -40,7 +40,14 @@ const ExpensesComponent = () => {
     const totalAmount = calculateTotalAmount(expenses);
 
     useEffect(() => {
-        fetchExpenses();
+        const cachedExpenses = JSON.parse(localStorage.getItem('expenses'));
+
+        if (cachedExpenses) {
+            setExpenses(cachedExpenses);
+        } else {
+            fetchExpenses();
+            {console.log('data fetch')}
+        }
     }, []);
 
     return (

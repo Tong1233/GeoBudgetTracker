@@ -10,10 +10,15 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
     const currentDate = new Date().toLocaleDateString('en-CA').split('T')[0];// Get the current date in the format "YYYY-MM-DD"
     const [date, setdate] = useState(currentDate);
     const [currentLocation, setCurrentLocation] = useState(null);
+    const [formColorDate, setColorDate] = useState('1px solid black');
+    const [formColorName, setColorName] = useState('1px solid black');
+    const [formColorAmount, setColorAmount] = useState('1px solid black');
+    const [formColorLocation, setColorLocation] = useState('black');
 
     const handleMapEvent= (event) => {
         const { latLng } = event;
-        setCurrentLocation({ lat: latLng.lat(), lng: latLng.lng() });
+        setCurrentLocation({ lat: latLng.lat(), lng: latLng.lng()});
+        return;
     };
 
     const getCurrentLocation = () => {
@@ -32,9 +37,36 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
         }
     };
 
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        //console.log(currentLocation?.lat, currentLocation?.lng);
+
+        try {
+
+            if (typeof date !== 'string' || date.trim().length === 0) {
+                setColorDate('1px solid red');
+            }
+
+            // Validate name
+            if (typeof name !== 'string' || name.trim().length === 0) {
+                setColorName('1px solid red');
+            }
+
+            // Validate amount
+            const amountValue = parseFloat(amount);
+            if (isNaN(amountValue)) {
+                setColorAmount('1px solid red');
+            }
+
+            // Validate lat and lng
+           
+            if (currentLocation ==null) {
+                setColorLocation('red');
+            }
+        } catch (error) {
+            console.error('Error in form data:', error);
+        }
+
         fetch('http://localhost:5000/expenses', {
             method: 'POST',
             headers: {
@@ -45,16 +77,22 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                 name,
                 amount: parseFloat(amount),
                 description,
-                lat: currentLocation?.lat || 0, 
-                lng: currentLocation?.lng || 0, 
+                lat: currentLocation.lat, 
+                lng: currentLocation.lng, 
             }),
         })
             .then(response => response.json())
             .then(data => {
                 onExpenseAdded();
                 console.log(data);
+                setColorDate('1px solid black');
+                setColorName('1px solid black');
+                setColorAmount('1px solid black');
+                setColorLocation('black');
             })
-            .catch(error => console.error('Error adding expense:', error));
+            .catch(error => {
+                console.error('Error adding expense:', error);
+            });
     };
 
     return (
@@ -77,7 +115,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                         type="text"
                         value={date}
                         onChange={(e) => setdate(e.target.value)}
-                        style={{ width: '100%', padding: '5px' }}
+                        style={{ width: '100%', padding: '5px', border: formColorDate }}
                     />
                 </label>
             </div>
@@ -90,7 +128,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                         value={name}
                         onChange={(e) => setname(e.target.value)}
                         placeholder="Required"
-                        style={{ width: '100%', padding: '5px' }}
+                        style={{ width: '100%', padding: '5px', border: formColorName }}
                     />
                 </label>
             </div>
@@ -103,7 +141,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         placeholder="Required"
-                        style={{width: '100%', padding: '5px' }}
+                        style={{ width: '100%', padding: '5px', border: formColorAmount }}
                     />
                 </label>
             </div>
@@ -121,19 +159,23 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                     />
                 </label>
             </div>
-            <label style={{ marginBottom: '5px', textAlign: 'center', width: '100%' }}>     
+            <label style={{ marginBottom: '5px', textAlign: 'center', width: '100%' }}>    
+                {console.log(formColorLocation)}
                 <button
-                    onClick={getCurrentLocation}
+                    onClick={(e) => {
+                        e.preventDefault(); // Prevent form submission
+                        getCurrentLocation();
+                    }}
                     style={{
                         background: 'transparent',
-                        border: '1px solid black',
-                        color: 'black', // Change the color to match your design
+                        color: formColorLocation, // Change the color to match your design
+                        border: '1px solid '+formColorLocation,
                         fontSize: '14px', // Adjust the font size
                         padding: '5px', // Adjust the padding
                         cursor: 'pointer',
                     }}
                 >
-                    Set Location (Optional)
+                    Set Location (Required)
                 </button>
             </label>
             <MapComponent width="24vw" height="35vh" zoom={9} currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}  CallBackLocation={handleMapEvent}/> 

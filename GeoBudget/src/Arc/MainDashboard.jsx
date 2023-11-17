@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import MapComponent from './HeatMapComponent';
+import MapComponent from './MapComponent';
 
 const Dashboard = () => {
     const [expenses, setExpenses] = useState([]);
     const [heatmapdata, setHeatmapData] = useState([]);
     const [isDataFetched, setIsDataFetched] = useState(false);
+    const [map, setMap] = useState(null);
+    const [showHeatMap, setshowHeatMap] = useState(false);
 
     useEffect(() => {
         fetchExpenses();
-        const cachedExpenses = JSON.parse(localStorage.getItem('expenses'));
-
-        if (cachedExpenses) {
-            setExpenses(cachedExpenses);
-        } else {
-            fetchExpenses();
-            { console.log('data fetch') }
-        }
     }, []);
 
     useEffect(() => {
-        if (isDataFetched) {
-            makeheatmap();
-        }
-    }, [isDataFetched]);
-
+        fetchExpenses();
+        makeheatmap();
+    }, [expenses]);
 
     const fetchExpenses = () => {
         fetch('http://localhost:5000/expenses')
@@ -31,35 +23,40 @@ const Dashboard = () => {
             .then(data => {
                 setExpenses(data);
                 setIsDataFetched(true);
-                localStorage.setItem('expenses', JSON.stringify(data));
+                setshowHeatMap(true);
             })
             .catch(error => {
                 console.error('Error fetching expenses:', error);
+                setshowHeatMap(false); // Set showHeatMap to false in case of an error
             });
     };
 
     const makeheatmap = () => {
         if (window.google && window.google.maps && window.google.maps.LatLng && isDataFetched) {
-            
+            const mapContainer = document.getElementById('map');
+
+            if (!mapContainer) {
+                console.error('Map container element not found');
+                return;
+            }
 
             setHeatmapData(expenses.map((expense) => {
                 const location = new window.google.maps.LatLng(expense.lat || 0, expense.lng || 0);
-                //console.log('Lat:', expense.lat, 'Lng:', expense.lng); // Add logging to check lat and lng values
                 return {
                     location,
                     weight: expense?.amount || 1,
                 };
             }));
         } else {
-            requestAnimationFrame(makeheatmap);
+            setTimeout(makeheatmap, 10);
         }
     };
 
     return (
         <div>
             <h2>Main Dashboard</h2>
-            {isDataFetched && <MapComponent setHeatmapData={setHeatmapData} heatmapData={heatmapdata} />}
-            
+            {isDataFetched && <MapComponent showHeatMap={showHeatMap} heatmapData={heatmapdata} />}
+            <div id="map" style={{ height: '0px' }}></div> 
         </div>//this is an invisible map so that makeheatmap can detect that a container is created
     );
 };

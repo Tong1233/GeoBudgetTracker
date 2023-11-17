@@ -2,7 +2,7 @@
 
 /* global google */
 import React, { useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Marker, HeatmapLayer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, HeatmapLayer } from '@react-google-maps/api';
 
 const libraries = ["visualization"];
 class LoadScriptOnlyIfNeeded extends LoadScript {
@@ -30,12 +30,11 @@ class LoadScriptOnlyIfNeeded extends LoadScript {
     }
 }
 
-const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation, CallBackLocation, showHeatMap, heatmapData}) => {
+const HeatMapComponent = ({ width, height, zoom, heatmapData, setHeatmapData }) => {
 
     const [isScriptLoaded, setScriptLoaded] = useState(false);
-    const [mapInstance, setMapInstance] = useState(null);
-    //const [currentLocation, setCurrentLocation] = useState(null);
-
+    const [showHeatMap, setshowHeatMap] = useState(false);
+    const [isMapClicked, setIsMapClicked] = useState(false);
     const checkScriptLoaded = () => {
         if (window.google && window.google.maps) {
             console.log('Google Maps API loaded successfully');
@@ -47,13 +46,24 @@ const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation
 
     useEffect(() => {
         checkScriptLoaded();
+        // Cleanup logic when the component unmounts
+        return () => {
+            // Clear any lingering Google Maps API script
+            const scriptElements = document.getElementsByTagName('script');
+            Array.from(scriptElements).forEach((script) => {
+                if (script.src.includes('maps.googleapis.com')) {
+                    script.parentNode.removeChild(script);
+                }
+            });
+        }
+        
     }, []);
 
 
-    const handleMapMovement = (event) => {
-        const { latLng } = event;
-        setCurrentLocation({ lat: latLng.lat(), lng: latLng.lng() });
-        CallBackLocation({ lat: latLng.lat(), lng: latLng.lng() });
+    const handleMap = () => {
+        setshowHeatMap(true);
+        setHeatmapData(heatmapData);
+        setIsMapClicked(true);
     };
 
 
@@ -64,17 +74,31 @@ const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation
     };
 
     const center = {
-        lat: currentLocation?.lat || 43.70, // Latitude of Toronto, Canada
-        lng: currentLocation?.lng ||-79.42, // Longitude of Toronto, Canada
-    };
-
-    const onLoad = (map) => {
-        setMapInstance(map);
+        lat: 43.70, // Latitude of Toronto, Canada
+        lng: -79.42, // Longitude of Toronto, Canada
     };
 
     const onUnmount = () => {
-        setMapInstance(null); // Clear the map instance on unmount
+        setshowHeatMap(false);
+        setHeatmapData(null);
         setScriptLoaded(false);
+        console.log("Unmounteed!");
+        
+    };
+
+    const overlayStyle = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: isMapClicked ? 'none' : 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        cursor: 'pointer',
+        pointerEvents: 'none',
     };
 
     return (
@@ -85,8 +109,7 @@ const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation
                     mapContainerStyle={containerStyle}
                     center={center}
                     zoom={zoom || 11}
-                    onClick={handleMapMovement}
-                    onLoad={onLoad}
+                    onClick={handleMap}
                     onUnmount={onUnmount}
                 >
                     {showHeatMap && (
@@ -96,17 +119,14 @@ const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation
                         />
                     )}
                     {console.log(heatmapData)}
-                    {currentLocation && (
-                        <Marker
-                            position={currentLocation}
-                            draggable={true} // Allow the marker to be dragged
-                            onDragEnd={handleMapMovement} // Handle drag end event
-                        />
-                    )}
+                    <div style={overlayStyle} onClick={handleMap}>
+                        <div style={{ fontSize: '40px', color: 'white' }}>Click to Show Heatmap</div>
+                    </div>
                 </GoogleMap>)}
+            
             
         </LoadScriptOnlyIfNeeded>
     );
 };
 
-export default MapComponent;
+export default HeatMapComponent;

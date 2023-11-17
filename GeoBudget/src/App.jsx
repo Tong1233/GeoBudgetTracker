@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import MapComponent from './MapComponent';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import MainDashboard from './MainDashboard';
-import IncomeComponent from './IncomeComponent';
 import ExpensesComponent from './ExpensesComponent';
 
 const GeoBudget = () => {
@@ -25,9 +24,6 @@ const GeoBudget = () => {
                                 <Link to="/" style={{ textDecoration: 'none', color: 'black' }}>Main Dashboard</Link>
                             </li>
                             <li>
-                                <Link to="/income" style={{ textDecoration: 'none', color: 'black' }}>Income</Link>
-                            </li>
-                            <li>
                                 <Link to="/expenses" style={{ textDecoration: 'none', color: 'black' }}>Expenses</Link>
                             </li>
                         </ul>
@@ -38,7 +34,6 @@ const GeoBudget = () => {
                 <div style={{ flex: 1, padding: '20px' }}>
                     <Routes>
                         <Route path="/" element={<MainDashboard />} />
-                        <Route path="/income" element={<IncomeComponent />} />
                         <Route path="/expenses" element={<ExpensesComponent />} />
                     </Routes>
                 </div>
