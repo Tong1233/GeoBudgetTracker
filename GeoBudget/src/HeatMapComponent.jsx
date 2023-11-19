@@ -30,11 +30,30 @@ class LoadScriptOnlyIfNeeded extends LoadScript {
     }
 }
 
-const HeatMapComponent = ({ width, height, zoom, heatmapData, setHeatmapData }) => {
+const HeatMapComponent = ({ width, height, zoom, expenses }) => {
 
     const [isScriptLoaded, setScriptLoaded] = useState(false);
     const [showHeatMap, setshowHeatMap] = useState(false);
     const [isMapClicked, setIsMapClicked] = useState(false);
+    const [heatmapData, setHeatmapData] = useState([]);
+
+    const makeheatmap = () => {
+        console.log(expenses.length);
+        if (window.google && window.google.maps && window.google.maps.LatLng) {
+
+            setHeatmapData(expenses.map((expense) => {
+                const location = new window.google.maps.LatLng(expense.lat || 0, expense.lng || 0);
+                //console.log('Lat:', expense.lat, 'Lng:', expense.lng); // Add logging to check lat and lng values
+                return {
+                    location,
+                    weight: expense?.amount || 1,
+                };
+            }));
+        } else {
+            requestAnimationFrame(makeheatmap);
+        }
+    };
+
     const checkScriptLoaded = () => {
         if (window.google && window.google.maps) {
             console.log('Google Maps API loaded successfully');
@@ -46,6 +65,9 @@ const HeatMapComponent = ({ width, height, zoom, heatmapData, setHeatmapData }) 
 
     useEffect(() => {
         checkScriptLoaded();
+        if (expenses.length > 0)
+            makeheatmap();
+
         // Cleanup logic when the component unmounts
         return () => {
             // Clear any lingering Google Maps API script
@@ -61,14 +83,17 @@ const HeatMapComponent = ({ width, height, zoom, heatmapData, setHeatmapData }) 
 
 
     const handleMap = () => {
+       if (expenses.length > 0)
+          makeheatmap();
+
+        //setHeatmapData(heatmapData);
         setshowHeatMap(true);
-        setHeatmapData(heatmapData);
         setIsMapClicked(true);
     };
 
 
     const containerStyle = {
-        width: width || '80vw', // Use the provided width or a default value
+        width: width || '43vw', // Use the provided width or a default value
         height: height || '80vh', // Use the provided height or a default value
         margin: 'auto', // Center the map horizontally
     };

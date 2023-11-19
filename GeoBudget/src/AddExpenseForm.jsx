@@ -44,18 +44,18 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
         try {
 
             if (typeof date !== 'string' || date.trim().length === 0) {
-                setColorDate('1px solid red');
+                setColorDate('2px solid red');
             }
 
             // Validate name
             if (typeof name !== 'string' || name.trim().length === 0) {
-                setColorName('1px solid red');
+                setColorName('2px solid red');
             }
 
             // Validate amount
             const amountValue = parseFloat(amount);
             if (isNaN(amountValue)) {
-                setColorAmount('1px solid red');
+                setColorAmount('2px solid red');
             }
 
             // Validate lat and lng

@@ -54,13 +54,13 @@ const ExpensesComponent = () => {
         <div style={{ display: 'flex' }}>
             {/* Left side with input form */}
             <div style={{ flex: 1}}>
-                <h2>New Expense</h2>
+                <h2>Enter New Expense:</h2>
                 <AddExpenseForm onExpenseAdded={handleExpenseAdded} />
             </div>
 
             {/* Right side with expenses table */}
             <div style={{ flex: 2, marginRight: '10px', width: '50%'}}>
-                <h2>Expenses</h2>
+                <h2>Expenses:</h2>
                 <div style={styles.tableContainer}>
                 <table style={styles.table}>
                     <thead>
