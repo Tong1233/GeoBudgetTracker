@@ -93,7 +93,7 @@ const HeatMapComponent = ({ width, height, zoom, expenses }) => {
 
 
     const containerStyle = {
-        width: width || '43vw', // Use the provided width or a default value
+        width: width || '50vw', // Use the provided width or a default value
         height: height || '80vh', // Use the provided height or a default value
         margin: 'auto', // Center the map horizontally
     };

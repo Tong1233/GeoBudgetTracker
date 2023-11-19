@@ -9,13 +9,14 @@ import {
     Title,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js';
 
 import 'chartjs-adapter-date-fns';
 import 'chartjs-adapter-moment';
 import { Line } from 'react-chartjs-2';
 
-ChartJS.register(TimeScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend); // tree shakeable!!! 
+ChartJS.register(TimeScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler); // tree shakeable!!! 
 
 
 const LineGraph = () => {
@@ -66,18 +67,33 @@ const LineGraph = () => {
         datasets: [
             {
                 data: [30, 30, 45, 90, 50], //processedExpenses.map((entry) => entry.amount),
-                fill: false,
                 borderColor: 'black',
                 borderWidth: 2,
                 pointBackgroundColor: 'black',
                 pointRadius: 2,
                 tension: 0.3,
-                backgroundColor: 'blue'
+                fill: true,
+                backgroundColor: (context) => {
+                    if (!context || !context.chart || !context.chart.ctx || !context.chart.chartArea) {
+                        // Return a default background color or handle the absence of context gracefully
+                        return 'rgba(255, 0, 0, 0.3)';
+                    }
+
+                    const { ctx, chartArea } = context.chart;
+                    const gradient = ctx.createLinearGradient(chartArea.left, chartArea.bottom, chartArea.left, chartArea.top);
+
+                    gradient.addColorStop(0, 'rgba(255, 0, 0, 0)');
+                    gradient.addColorStop(1, 'rgba(255, 0, 0, 0.4)');
+
+                    return gradient;
+                },
             },
         ],
     };
 
     const config = {
+        maintainAspectRatio: false, 
+        responsive: true, // Ensure responsiveness
         scales: {
             x: {
                 type: 'time',
@@ -123,26 +139,17 @@ const LineGraph = () => {
                 },
             }
         },
-        elements: {
-            line: {
-                fill: {
-                    target: 'origin', // Fill the area under the line from the origin
-                },
-            },
-        },
+        
         plugins: {
             legend: {
                 display: false,
-            },
-            filler: {
-                propagate: true,
             },
         },
 
     };
 
     return (
-        <div style={{ width: '37vw', height: '50vh' }}>
+        <div style={{ width: '30vw', height: '47vh' }}>
             <Line data={data} options={config} />
         </div>
     );
