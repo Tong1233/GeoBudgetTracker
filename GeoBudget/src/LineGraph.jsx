@@ -33,9 +33,9 @@ const LineGraph = ({ rawdataexpenses }) => {
     function processExpenses(rawData) {
         const processedData = rawData.reduce((result, { date, amount }) => {
             // Convert the date string to a Date object
-            const currentDate = new Date(date);
+        const currentDate = new Date(date);
             // Check if the date already exists in the result array
-            const existingEntry = result.find((entry) => entry.date.getTime() === currentDate.getTime());
+        const existingEntry = result.find((entry) => entry.date.getTime() === currentDate.getTime());
 
             if (existingEntry) {
                 // If the date exists, add the amounts together

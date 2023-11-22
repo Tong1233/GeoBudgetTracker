@@ -84,7 +84,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             .then(response => response.json())
             .then(data => {
                 onExpenseAdded();
-                console.log(data);
+                //console.log(data);
                 setColorDate('1px solid black');
                 setColorName('1px solid black');
                 setColorAmount('1px solid black');

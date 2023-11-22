@@ -127,16 +127,15 @@ const ExpensesComponent = ({CallBackDatabaseConnection}) => {
     );
 };
 
-// Add this style section within your component file
+
 const styles = {
 
     tableContainer: {
-        maxHeight: '80vh',  // Adjust the maximum height as needed
+        maxHeight: '80vh',  
         //maxWidth: '60vw',  //max width
         overflowY: 'auto',  // Vertical scrollbar if content overflows
     },
 
-    // Add this new style for the table
     table: {
         border: '1px solid black',
         //maxWidth: '70vw',  // Adjust the width as needed
@@ -144,7 +143,6 @@ const styles = {
         overflow: 'auto'
     },
 
-    // Add this new style for the table cells
     tableCell: {
         border: '1px solid black',
         padding: '8px',

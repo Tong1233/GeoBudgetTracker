@@ -25,10 +25,10 @@ const GeoBudget = () => {
             marginBottom: '5px',
             borderRadius: '10px',
             border: '3px solid black',
-            backgroundColor: 'none', // Change this to your desired default button color
+            backgroundColor: 'none', 
             display: 'block',
-            fontSize: '17px', // Change this to your desired font size
-            transition: 'background-color 0.3s', // Add a smooth transition for the background color change
+            fontSize: '17px', 
+            transition: 'background-color 0.3s', 
         },
     };
 
@@ -42,21 +42,23 @@ const GeoBudget = () => {
                         <FontAwesomeIcon icon={faPowerOff} style={{ color: power ? 'green' : 'red', fontSize: 120 }}/>
                     </div>
                     <div style={{ color: power ? 'green' : 'red', fontWeight: 'bold', fontSize: '12px', display: 'flex', justifyContent: 'center' }}>
-                        {power ? 'Connected' : 'Connecting to Database...'} 
+                        {power ? 'Connected to Database' : 'Connecting to Database...'} 
                     </div>
                     {/* Navigation Links */}
                     <nav style={{ listStyleType: 'none', padding: 0 }}>
                         <ul style={{ listStyleType: 'none', padding: 0 }}>
                             <li>
-                                <Link to="/" style={styles.navLink}>Main Dashboard</Link>
+                                <Link to="/" style={styles.navLink} onMouseOver={(e) => e.target.style.backgroundColor = 'lightgray'} onMouseOut={(e) => e.target.style.backgroundColor = ''}>
+                                    Main Dashboard
+                                </Link>
                             </li>
                             <li>
-                                <Link to="/expenses" style={styles.navLink}>Modify Expenses</Link>
+                                <Link to="/expenses" style={styles.navLink} onMouseOver={(e) => e.target.style.backgroundColor = 'lightgray'} onMouseOut={(e) => e.target.style.backgroundColor = ''}>Modify Expenses</Link>
                             </li>
                         </ul>
                     </nav>
                     <div style={{bottom: '0', fontSize: '12px', fontStyle: 'italic', display: 'flex', justifyContent: 'center'}}>
-                        {/* You can add an image here */}
+                        
                         Written by Tong Wang
                     </div>
                 </div>
