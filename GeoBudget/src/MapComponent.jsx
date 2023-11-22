@@ -95,7 +95,7 @@ const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation
                             options={{ radius: 20, opacity: 0.6 }}
                         />
                     )}
-                    {console.log(heatmapData)}
+                    
                     {currentLocation && (
                         <Marker
                             position={currentLocation}

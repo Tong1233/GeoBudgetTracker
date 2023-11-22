@@ -3,11 +3,16 @@ import MapComponent from './HeatMapComponent';
 import LineGraph from './LineGraph';
 
 
-const Dashboard = () => {
+const Dashboard = ({ CallBackDatabaseConnection }) => {
     const [expenses, setExpenses] = useState([]);
     const [isDataFetched, setIsDataFetched] = useState(false);
+    const [IsDatabaseConnected, setIsDatabaseConnected] = useState(false);
+    const totalAmount = calculateTotalAmount(expenses);
+    const NumberofExpenses = calculateNumber(expenses);
 
     useEffect(() => {
+        checkconnection();
+        console.log(IsDatabaseConnected);
         const cachedExpenses = JSON.parse(localStorage.getItem('expenses'));
 
         if (cachedExpenses) {
@@ -25,16 +30,56 @@ const Dashboard = () => {
                 setExpenses(data);
                 setIsDataFetched(true);
                 localStorage.setItem('expenses', JSON.stringify(data));
+                setIsDatabaseConnected(true);
             })
             .catch(error => {
+                setIsDatabaseConnected(false);
                 console.error('Error fetching expenses:', error);
             });
     };
 
+    const checkconnection = async () => {//to update path for just checking health
+        try {
+            const response = await fetch('http://localhost:5000/expenses'); // Replace with your actual endpoint
+            if (response.ok) {
+                return setIsDatabaseConnected(true);
+            } else {
+                return setIsDatabaseConnected(false);
+            }
+        } catch (error) {
+            console.error('Error checking database connection:', error);
+            return setIsDatabaseConnected(false);
+        }
+    };
+
+    useEffect(() => {
+        console.log(IsDatabaseConnected);
+        CallBackDatabaseConnection(IsDatabaseConnected);
+    }, [IsDatabaseConnected]);
+   
+    function calculateTotalAmount(expenses) {
+        let totalAmount = 0;
+
+        for (let i = 0; i < expenses.length; i++) {
+            totalAmount += expenses[i].amount;
+        }
+
+        return parseFloat(totalAmount.toFixed(2));
+    }
+
+    function calculateNumber(expenses) {
+        let numexp = 0;
+
+        if (expenses.length > 0)
+            numexp = expenses.length;
+
+        return numexp;
+    }
+
     return (
         <div style={{ display: 'flex' }}>
             <div style={{ flex: 1 }}>
-                <h2>Dashboard</h2>
+                <h2>GeoExpenses Dashboard</h2>
                 {/* Transparent rectangle with rounded corners and circles */}
                 <div
                     style={{
@@ -44,11 +89,11 @@ const Dashboard = () => {
                         border: '3px solid black',
                         //textAlign: 'center',
                         borderRadius: '30px', 
-                        position: 'relative', // Set position to enable absolute positioning of circles
-                        marginBottom: '20px', // Adjust the spacing between the rectangle and LineGraph
+                        position: 'relative', 
+                        marginBottom: '20px', 
                     }}
                 >
-                    {/* Two overlapping circles in the bottom left corner */}
+                    {/* Two overlapping circles in the bottom right corner */}
                     <div
                         style={{
                             position: 'absolute',
@@ -76,14 +121,20 @@ const Dashboard = () => {
                         ></div>
                     </div>
 
-                    {/* Add any content or text inside the rectangle if needed */}
-                    <p style={{ textAlign: 'center', paddingTop: '10px', color: 'black' }}>Above the LineGraph</p>
+                    {/* Creditcard Text */}
+                    <p style={{ textAlign: 'left', paddingLeft: '30px', paddingTop: '10px', color: 'black', fontWeight: 'bold', fontSize: '20px' }}>
+                        Total Expenses:   <br /> $ {totalAmount}
+                    </p>
+                    <p style={{ textAlign: 'left', paddingLeft: '30px', color: 'black', fontWeight: 'bold', fontSize: '15px' }}>Database Entries: {NumberofExpenses}</p>
+                    <p style={{ textAlign: 'left', paddingLeft: '30px', color: 'black', fontWeight: 'bold', fontSize: '15px' }}>Average Purchase Price: $ {NumberofExpenses > 0
+                        ? parseFloat((totalAmount / NumberofExpenses).toFixed(2))
+                        : '0'}</p>
                 </div>
 
 
                 {/* LineGraph component */}
                 <div style={{ flex: 1 }}>
-                    <LineGraph />
+                    {isDataFetched && <LineGraph rawdataexpenses={expenses} />}
                 </div>
             </div>
 

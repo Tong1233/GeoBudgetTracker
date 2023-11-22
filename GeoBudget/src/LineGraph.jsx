@@ -19,19 +19,21 @@ import { Line } from 'react-chartjs-2';
 ChartJS.register(TimeScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler); // tree shakeable!!! 
 
 
-const LineGraph = () => {
-    const rawdataexpenses = [
+const LineGraph = ({ rawdataexpenses }) => {
+
+    const [processedExpenses, setprocessedExpenses] = useState([]);
+
+    /*const rawdataexpenses = [
         { date: '11-20-2023', amount: 12 },
         { date: '11-20-2023', amount: 24 },
         { date: '11-16-2023', amount: 13 },
         { date: '11-17-2023', amount: 30 },
-        { date: '11-18-2023', amount: 45 }];
+        { date: '11-18-2023', amount: 45 }];*/
 
     function processExpenses(rawData) {
         const processedData = rawData.reduce((result, { date, amount }) => {
             // Convert the date string to a Date object
             const currentDate = new Date(date);
-
             // Check if the date already exists in the result array
             const existingEntry = result.find((entry) => entry.date.getTime() === currentDate.getTime());
 
@@ -52,25 +54,35 @@ const LineGraph = () => {
         return processedData;
     }
 
-    const processedExpenses = processExpenses(rawdataexpenses);
-    console.log(processedExpenses);
+    
+    useEffect(() => {
+        if (rawdataexpenses.length > 0) {
+            setprocessedExpenses(processExpenses(rawdataexpenses));
+        } else {
+            setprocessedExpenses([{ date:'', amount: 0 }]);
+        }
+    }, []);
+
+    //const processedExpenses = processExpenses(rawdataexpenses);
+    //console.log(processedExpenses);
 
     const data = {
-        //labels: processedExpenses.map((entry) => entry.date),
-        labels: [
+        labels: processedExpenses.map((entry) => entry.date),
+        /*labels: [
             new Date('11-14-2023'),
             new Date('11-15-2023'),
             new Date('2023-11-19T12:00:00Z'),
             new Date('2023-11-20T12:00:00Z'),
             new Date('2023-11-21T12:00:00Z'),
-        ],
+        ],*/
         datasets: [
             {
-                data: [30, 30, 45, 90, 50], //processedExpenses.map((entry) => entry.amount),
+                //data: [30, 30, 45, 90, 50],
+                data: processedExpenses.map((entry) => entry.amount),
                 borderColor: 'black',
                 borderWidth: 2,
                 pointBackgroundColor: 'black',
-                pointRadius: 2,
+                pointRadius: 4,
                 tension: 0.3,
                 fill: true,
                 backgroundColor: (context) => {

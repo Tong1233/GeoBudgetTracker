@@ -160,7 +160,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                 </label>
             </div>
             <label style={{ marginBottom: '5px', textAlign: 'center', width: '100%' }}>    
-                {console.log(formColorLocation)}
+               
                 <button
                     onClick={(e) => {
                         e.preventDefault(); // Prevent form submission

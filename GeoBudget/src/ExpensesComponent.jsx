@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddExpenseForm from './AddExpenseForm';
 
-const ExpensesComponent = () => {
+const ExpensesComponent = ({CallBackDatabaseConnection}) => {
     const [expenses, setExpenses] = useState([]);
-
+    const [IsDatabaseConnected, setIsDatabaseConnected] = useState(false);
     const handleExpenseAdded = () => {
         fetchExpenses();
     };
@@ -23,9 +23,36 @@ const ExpensesComponent = () => {
     const fetchExpenses = () => {
         fetch('http://localhost:5000/expenses')
             .then(response => response.json())
-            .then(data => { setExpenses(data), localStorage.setItem('expenses', JSON.stringify(data)) })
-            .catch(error => console.error('Error fetching expenses:', error));
+            .then(data => {
+                setExpenses(data);
+                localStorage.setItem('expenses', JSON.stringify(data));
+                setIsDatabaseConnected(true);
+            })
+            .catch(error => {
+                setIsDatabaseConnected(false);
+                console.error('Error fetching expenses:', error);
+            });
     };
+
+    const checkconnection = async () => {//to update path for just checking health
+        try {
+            const response = await fetch('http://localhost:5000/expenses'); // Replace with your actual endpoint
+            if (response.ok) {
+                return setIsDatabaseConnected(true);
+            } else {
+                return setIsDatabaseConnected(false);
+            }
+        } catch (error) {
+            console.error('Error checking database connection:', error);
+            return setIsDatabaseConnected(false);
+        }
+    };
+
+
+    useEffect(() => {
+        console.log("exp:"+ IsDatabaseConnected);
+        CallBackDatabaseConnection(IsDatabaseConnected);
+    }, [IsDatabaseConnected]);
 
     function calculateTotalAmount(expenses) {
         let totalAmount = 0;
@@ -34,19 +61,22 @@ const ExpensesComponent = () => {
             totalAmount += expenses[i].amount;
         }
 
-        return totalAmount;
+        return parseFloat(totalAmount.toFixed(2));
     }
 
     const totalAmount = calculateTotalAmount(expenses);
 
     useEffect(() => {
+        //setIsDatabaseConnected(checkconnection);
+        checkconnection();
+        //setIsDatabaseConnected(isConnected);
         const cachedExpenses = JSON.parse(localStorage.getItem('expenses'));
 
         if (cachedExpenses) {
             setExpenses(cachedExpenses);
         } else {
             fetchExpenses();
-            {console.log('data fetch')}
+            //{console.log('data fetch')}
         }
     }, []);
 

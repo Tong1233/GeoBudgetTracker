@@ -38,7 +38,7 @@ const HeatMapComponent = ({ width, height, zoom, expenses }) => {
     const [heatmapData, setHeatmapData] = useState([]);
 
     const makeheatmap = () => {
-        console.log(expenses.length);
+        //console.log(expenses.length);
         if (window.google && window.google.maps && window.google.maps.LatLng) {
 
             setHeatmapData(expenses.map((expense) => {
@@ -107,7 +107,7 @@ const HeatMapComponent = ({ width, height, zoom, expenses }) => {
         setshowHeatMap(false);
         setHeatmapData(null);
         setScriptLoaded(false);
-        console.log("Unmounteed!");
+        //console.log("Unmounteed!");
         
     };
 
@@ -143,9 +143,9 @@ const HeatMapComponent = ({ width, height, zoom, expenses }) => {
                             options={{ radius: 20, opacity: 0.6 }}
                         />
                     )}
-                    {console.log(heatmapData)}
+                    
                     <div style={overlayStyle} onClick={handleMap}>
-                        <div style={{ fontSize: '40px', color: 'white' }}>Click to Show Heatmap</div>
+                        <div style={{ fontSize: '40px', color: 'white' }}>Click to Show Spending Heatmap</div>
                     </div>
                 </GoogleMap>)}
             
