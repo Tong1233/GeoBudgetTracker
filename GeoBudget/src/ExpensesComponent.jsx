@@ -12,7 +12,7 @@ const ExpensesComponent = ({CallBackDatabaseConnection}) => {
     const handleDeleteExpense = async (expenseId) => {
         try {
             // Send a DELETE request to delete the expense by ID
-            await axios.delete(`http://localhost:5000/expenses/${expenseId}`);
+            await axios.delete(`https://geobackend.onrender.com/expenses/${expenseId}`);
             // Fetch updated expenses after deletion
             fetchExpenses();
         } catch (error) {
@@ -21,7 +21,7 @@ const ExpensesComponent = ({CallBackDatabaseConnection}) => {
     };
 
     const fetchExpenses = () => {
-        fetch('http://localhost:5000/expenses')
+        fetch('https://geobackend.onrender.com/expenses')
             .then(response => response.json())
             .then(data => {
                 setExpenses(data);
@@ -36,7 +36,7 @@ const ExpensesComponent = ({CallBackDatabaseConnection}) => {
 
     const checkconnection = async () => {//to update path for just checking health
         try {
-            const response = await fetch('http://localhost:5000/expenses'); // Replace with your actual endpoint
+            const response = await fetch('https://geobackend.onrender.com/expenses'); // Replace with your actual endpoint
             if (response.ok) {
                 return setIsDatabaseConnected(true);
             } else {

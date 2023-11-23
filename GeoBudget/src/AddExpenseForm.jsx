@@ -70,7 +70,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             console.error('Error in form data:', error);
         }
 
-        fetch('http://localhost:5000/expenses', {
+        fetch('https://geobackend.onrender.com/expenses', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

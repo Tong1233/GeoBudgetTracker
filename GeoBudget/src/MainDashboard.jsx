@@ -32,7 +32,7 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
     }, []);
 
     const fetchExpenses = () => {
-        fetch('http://localhost:5000/expenses')
+        fetch('https://geobackend.onrender.com/expenses')
             .then(response => response.json())
             .then(data => {
                 setExpenses(data);
@@ -49,7 +49,7 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
 
     const checkconnection = async () => {//to update path for just checking health
         try {
-            const response = await fetch('http://localhost:5000/expenses'); // Replace with your actual endpoint
+            const response = await fetch('https://geobackend.onrender.com/expenses'); // Replace with your actual endpoint
             if (response.ok) {
                 return setIsDatabaseConnected(true);
             } else {

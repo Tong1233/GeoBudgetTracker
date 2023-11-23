@@ -67,8 +67,7 @@ def delete_expense(expense_id):
 
 @app.route('/')
 def home():
-    # Return an HTML page with a welcome message
-    return render_template('index.html', message='Hosted!')
+    return "Hosted!"
 
 #This block ensures that the database is created and tables are defined
 #The key change is the addition of the with app.app_context(): block around the db.create_all() statement. This ensures that the database operations are executed within the context of the Flask application.
@@ -77,4 +76,4 @@ with app.app_context():
 
 # Run the Flask application if this script is executed
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
