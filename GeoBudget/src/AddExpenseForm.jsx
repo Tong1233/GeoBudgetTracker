@@ -15,10 +15,13 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
     const [formColorAmount, setColorAmount] = useState('1px solid black');
     const [formColorLocation, setColorLocation] = useState('black');
 
-    const handleMapEvent= (event) => {
+    const handleMapEvent = (event) => {
+        
         const { latLng } = event;
-        setCurrentLocation({ lat: latLng.lat(), lng: latLng.lng()});
+        if (latLng) 
+            setCurrentLocation({ lat: latLng?.lat(), lng: latLng?.lng() });
         return;
+       
     };
 
     const getCurrentLocation = () => {

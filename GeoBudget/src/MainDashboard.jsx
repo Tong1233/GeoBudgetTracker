@@ -12,7 +12,7 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
 
     useEffect(() => {
         checkconnection();
-        console.log(IsDatabaseConnected);
+        //console.log(IsDatabaseConnected);
         const cachedExpenses = JSON.parse(localStorage.getItem('expenses'));
 
         if (cachedExpenses) {
@@ -34,6 +34,7 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
             })
             .catch(error => {
                 setIsDatabaseConnected(false);
+                setIsDataFetched(true);
                 console.error('Error fetching expenses:', error);
             });
     };
@@ -53,7 +54,7 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
     };
 
     useEffect(() => {
-        console.log(IsDatabaseConnected);
+        //console.log(IsDatabaseConnected);
         CallBackDatabaseConnection(IsDatabaseConnected);
     }, [IsDatabaseConnected]);
    

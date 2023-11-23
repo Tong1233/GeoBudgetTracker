@@ -8,7 +8,9 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Configure the database URI. In this case, using SQLite and a file named 'expenses.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://xoinxwkw:hBoC6ANnU0gYxxfYIjtajR58cHAkiWpE@berry.db.elephantsql.com/xoinxwkw'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
 # Create a SQLAlchemy instance and associate it with the Flask app
 db = SQLAlchemy(app)
@@ -61,6 +63,12 @@ def delete_expense(expense_id):
             response = jsonify({'error': 'Expense not found'})
 
     return response
+
+
+@app.route('/')
+def home():
+    # Return an HTML page with a welcome message
+    return render_template('index.html', message='Hosted!')
 
 #This block ensures that the database is created and tables are defined
 #The key change is the addition of the with app.app_context(): block around the db.create_all() statement. This ensures that the database operations are executed within the context of the Flask application.
