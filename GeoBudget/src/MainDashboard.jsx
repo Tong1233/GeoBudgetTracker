@@ -86,10 +86,13 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
     }
 
     return (
+        <div>
+            <h2 style={{ fontSize: '40px', color: 'black', margin: '0', paddingBottom: '23px' }}>
+                GeoExpenses Dashboard
+            </h2>
         <div style={{ display: 'flex' }}>
             <div style={{ flex: 1 }}>
-                <h2>GeoExpenses Dashboard</h2>
-                {/* Transparent rectangle with rounded corners and circles */}
+                
                 <div
                     style={{
                         width: '30vw',
@@ -147,8 +150,9 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
                 </div>
             </div>
 
-            <div style={{ flex: 1, paddingTop: '84px' }}>
+            <div style={{ flex: 1, paddingTop: '0px' }}>
                 {isDataFetched && <MapComponent expenses={expenses} />}
+            </div>
             </div>
         </div>
     );
