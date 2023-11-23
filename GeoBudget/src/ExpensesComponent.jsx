@@ -50,7 +50,7 @@ const ExpensesComponent = ({CallBackDatabaseConnection}) => {
 
 
     useEffect(() => {
-        console.log("exp:"+ IsDatabaseConnected);
+        //console.log("exp:"+ IsDatabaseConnected);
         CallBackDatabaseConnection(IsDatabaseConnected);
     }, [IsDatabaseConnected]);
 
