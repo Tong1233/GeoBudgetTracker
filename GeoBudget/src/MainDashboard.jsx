@@ -21,6 +21,14 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
         } else {
             fetchExpenses();
         }
+
+        // Set up interval for periodic check (every 5 seconds)
+        const intervalId = setInterval(() => {
+            checkconnection();
+        }, 5000);
+
+        // Cleanup interval on component unmount
+        return () => clearInterval(intervalId);
     }, []);
 
     const fetchExpenses = () => {
