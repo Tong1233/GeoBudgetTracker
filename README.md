@@ -4,6 +4,11 @@ Link: https://tong1233.github.io/GeoExpensesTracker/
 
 Note that the intial connection to database will be slow since the Flask application is hosted on a free service. 
 
+![image](https://github.com/Tong1233/GeoExpensesTracker/assets/74699244/f61ba75f-d4ae-4bfb-9c58-55eb752e0a27)
+
+![image](https://github.com/Tong1233/GeoExpensesTracker/assets/74699244/2bf4012b-d077-45d7-afbb-daa86fb90306)
+
+
 **Features:**
 + Developed an interactive web application to track, visualize, and analyze expenses on an interactive map using React.Js, Flask, and PostgreSQL
 + Combined a Flask backend with a PostgreSQL database to ensure efficient and secure data management.
