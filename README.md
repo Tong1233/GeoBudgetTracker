@@ -2,7 +2,7 @@
 
 Link: https://tong1233.github.io/GeoExpensesTracker/
 
-Note that the intial connection to database will be slow since the Flask application is hosted on a free service. 
+**Note that the intial connection to database will be slow since the Flask application is hosted on a free service. **
 
 ![image](https://github.com/Tong1233/GeoExpensesTracker/assets/74699244/f61ba75f-d4ae-4bfb-9c58-55eb752e0a27)
 
