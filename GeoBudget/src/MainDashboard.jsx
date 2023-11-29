@@ -49,7 +49,7 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
 
     const checkconnection = async () => {//to update path for just checking health
         try {
-            const response = await fetch('https://geobackend.onrender.com/expenses'); // Replace with your actual endpoint
+            const response = await fetch('https://geobackend.onrender.com/expenses'); 
             if (response.ok) {
                 return setIsDatabaseConnected(true);
             } else {
@@ -86,7 +86,7 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
     }
 
     return (
-        <div>
+        <div >
             <h2 style={{ fontSize: '40px', color: 'black', margin: '0', paddingBottom: '23px' }}>
                 GeoExpenses Dashboard
             </h2>
@@ -143,15 +143,14 @@ const Dashboard = ({ CallBackDatabaseConnection }) => {
                         : '0'}</p>
                 </div>
 
-
                 {/* LineGraph component */}
-                <div style={{ flex: 1 }}>
-                    {isDataFetched && <LineGraph rawdataexpenses={expenses} />}
+               <div style={{ flex: 1 }}>
+                        {isDataFetched ? <LineGraph rawdataexpenses={expenses} /> : <LineGraph rawdataexpenses={[]} />}
                 </div>
             </div>
 
             <div style={{ flex: 1, paddingTop: '0px' }}>
-                {isDataFetched && <MapComponent expenses={expenses} />}
+                    {isDataFetched ? <MapComponent expenses={expenses} /> : <MapComponent expenses={[]} /> }
             </div>
             </div>
         </div>

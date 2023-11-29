@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MapComponent from './MapComponent';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import MainDashboard from './MainDashboard';
 import ExpensesComponent from './ExpensesComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,7 +34,7 @@ const GeoBudget = () => {
 
     return (
         <Router>
-            <div style={{ display: 'flex', height: '100vh' }}>
+            <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'auto' }}>
                 {/* Sidebar */}
                 <div style={{ width: '200px', background: '#f0f0f0', padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid black' }}>
                   

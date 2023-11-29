@@ -56,12 +56,22 @@ const LineGraph = ({ rawdataexpenses }) => {
 
     
     useEffect(() => {
+        //console.log(rawdataexpenses.length);
         if (rawdataexpenses.length > 0) {
             setprocessedExpenses(processExpenses(rawdataexpenses));
         } else {
             setprocessedExpenses([{ date:'', amount: 0 }]);
         }
     }, []);
+
+    useEffect(() => {
+        //console.log(rawdataexpenses.length);
+        if (rawdataexpenses.length > 0) {
+            setprocessedExpenses(processExpenses(rawdataexpenses));
+        } else {
+            setprocessedExpenses([{ date: '', amount: 0 }]);
+        }
+    }, [rawdataexpenses]);
 
     //const processedExpenses = processExpenses(rawdataexpenses);
     //console.log(processedExpenses);
@@ -161,7 +171,7 @@ const LineGraph = ({ rawdataexpenses }) => {
     };
 
     return (
-        <div style={{ width: '30vw', height: '47vh' }}>
+        <div style={{ width: '30vw', height: '47vh', overflow: 'auto' }}>
             <Line data={data} options={config} />
         </div>
     );
