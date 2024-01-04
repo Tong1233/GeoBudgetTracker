@@ -1,18 +1,15 @@
-# Import necessary modules and classes from Flask
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS  # Import CORS from flask_cors
+from flask_cors import CORS  
 
-# Create a Flask application
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# Configure the database URI. In this case, using SQLite and a file named 'expenses.db'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://xoinxwkw:hBoC6ANnU0gYxxfYIjtajR58cHAkiWpE@berry.db.elephantsql.com/xoinxwkw'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
-# Create a SQLAlchemy instance and associate it with the Flask app
 db = SQLAlchemy(app)
 
 # Define a model for the 'Expense' table in the database

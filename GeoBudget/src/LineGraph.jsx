@@ -62,15 +62,6 @@ const LineGraph = ({ rawdataexpenses }) => {
         } else {
             setprocessedExpenses([{ date:'', amount: 0 }]);
         }
-    }, []);
-
-    useEffect(() => {
-        //console.log(rawdataexpenses.length);
-        if (rawdataexpenses.length > 0) {
-            setprocessedExpenses(processExpenses(rawdataexpenses));
-        } else {
-            setprocessedExpenses([{ date: '', amount: 0 }]);
-        }
     }, [rawdataexpenses]);
 
     //const processedExpenses = processExpenses(rawdataexpenses);
@@ -116,6 +107,9 @@ const LineGraph = ({ rawdataexpenses }) => {
     const config = {
         maintainAspectRatio: false, 
         responsive: true, // Ensure responsiveness
+        animation: {
+            duration: 0  // Set duration to 0 to disable the loading animation
+        },
         scales: {
             x: {
                 type: 'time',
@@ -171,7 +165,7 @@ const LineGraph = ({ rawdataexpenses }) => {
     };
 
     return (
-        <div style={{ width: '30vw', height: '47vh', overflow: 'auto' }}>
+        <div style={{ width: '50vw', height: '50vh', overflow: 'auto' }}>
             <Line data={data} options={config} />
         </div>
     );

@@ -1,160 +1,64 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import MapComponent from './HeatMapComponent';
 import LineGraph from './LineGraph';
 
 
-const Dashboard = ({ CallBackDatabaseConnection }) => {
-    const [expenses, setExpenses] = useState([]);
+const Dashboard = ({expenses, setExpenses, IsSignedin, DemoData}) => {
     const [isDataFetched, setIsDataFetched] = useState(false);
-    const [IsDatabaseConnected, setIsDatabaseConnected] = useState(false);
-    const totalAmount = calculateTotalAmount(expenses);
-    const NumberofExpenses = calculateNumber(expenses);
+    const [DashboardExpenseData, setDashboardExpenseData] = useState([]);
+    const [totalamount, settotalamount] = useState();
 
     useEffect(() => {
-        checkconnection();
-        //console.log(IsDatabaseConnected);
-        const cachedExpenses = JSON.parse(localStorage.getItem('expenses'));
-
-        if (cachedExpenses) {
-            setExpenses(cachedExpenses);
+        if(IsSignedin && expenses) {
+            setDashboardExpenseData(expenses);
             setIsDataFetched(true);
-        } else {
-            fetchExpenses();
         }
+        else {
+            setDashboardExpenseData(DemoData);
+        }
+       
+    }, [IsSignedin, expenses, DemoData]);
 
-        // Set up interval for periodic check (every 5 seconds)
-        const intervalId = setInterval(() => {
-            checkconnection();
-        }, 5000);
+    useEffect(() => {
+        settotalamount(calculateTotalAmount(DashboardExpenseData));
+    }, [DashboardExpenseData]);
 
-        // Cleanup interval on component unmount
-        return () => clearInterval(intervalId);
+    useEffect(() => {
+        if(IsSignedin == false) {
+            setDashboardExpenseData(DemoData);
+            setIsDataFetched(true);
+        }
+       
     }, []);
 
-    const fetchExpenses = () => {
-        fetch('https://geobackend.onrender.com/expenses')
-            .then(response => response.json())
-            .then(data => {
-                setExpenses(data);
-                setIsDataFetched(true);
-                localStorage.setItem('expenses', JSON.stringify(data));
-                setIsDatabaseConnected(true);
-            })
-            .catch(error => {
-                setIsDatabaseConnected(false);
-                setIsDataFetched(true);
-                console.error('Error fetching expenses:', error);
-            });
-    };
-
-    const checkconnection = async () => {//to update path for just checking health
-        try {
-            const response = await fetch('https://geobackend.onrender.com/expenses'); 
-            if (response.ok) {
-                return setIsDatabaseConnected(true);
-            } else {
-                return setIsDatabaseConnected(false);
-            }
-        } catch (error) {
-            console.error('Error checking database connection:', error);
-            return setIsDatabaseConnected(false);
-        }
-    };
-
-    useEffect(() => {
-        //console.log(IsDatabaseConnected);
-        CallBackDatabaseConnection(IsDatabaseConnected);
-    }, [IsDatabaseConnected]);
    
-    function calculateTotalAmount(expenses) {
+    function calculateTotalAmount(data) {
         let totalAmount = 0;
+        console.log(data);
 
-        for (let i = 0; i < expenses.length; i++) {
-            totalAmount += expenses[i].amount;
+        for (let i = 0; i < data.length; i++) {
+            totalAmount += data[i].amount;
         }
 
         return parseFloat(totalAmount.toFixed(2));
     }
 
-    function calculateNumber(expenses) {
-        let numexp = 0;
-
-        if (expenses.length > 0)
-            numexp = expenses.length;
-
-        return numexp;
-    }
-
     return (
-        <div >
-            <h2 style={{ fontSize: '40px', color: 'black', margin: '0', paddingBottom: '23px' }}>
-                GeoExpenses Dashboard
-            </h2>
-        <div style={{ display: 'flex' }}>
-            <div style={{ flex: 1 }}>
-                
-                <div
-                    style={{
-                        width: '30vw',
-                        height: '35vh', // Adjust the height of the rectangle
-                        backgroundColor: 'rgba(169, 169, 169, 0.3)', // Set the background color with transparency
-                        border: '3px solid black',
-                        //textAlign: 'center',
-                        borderRadius: '30px', 
-                        position: 'relative', 
-                        marginBottom: '20px', 
-                    }}
-                >
-                    {/* Two overlapping circles in the bottom right corner */}
-                    <div
-                        style={{
-                            position: 'absolute',
-                            bottom: '8%',
-                            left: '73%',
-                            display: 'flex',
-                        }}
-                    >
-                        <div
-                            style={{
-                                width: '60px',
-                                height: '60px',
-                                borderRadius: '50%',
-                                backgroundColor:'rgba(255, 0, 0, 0.9)',
-                                marginRight: '-20px', // Adjust the spacing between circles
-                            }}
-                        ></div>
-                        <div
-                            style={{
-                                width: '60px',
-                                height: '60px',
-                                borderRadius: '50%',
-                                backgroundColor: 'rgba(255, 165, 0, 0.8)',
-                            }}
-                        ></div>
-                    </div>
-
-                    {/* Creditcard Text */}
-                    <p style={{ textAlign: 'left', paddingLeft: '30px', paddingTop: '10px', color: 'black', fontWeight: 'bold', fontSize: '20px' }}>
-                        Total Expenses:   <br /> $ {totalAmount}
-                    </p>
-                    <p style={{ textAlign: 'left', paddingLeft: '30px', color: 'black', fontWeight: 'bold', fontSize: '15px' }}>Database Entries: {NumberofExpenses}</p>
-                    <p style={{ textAlign: 'left', paddingLeft: '30px', color: 'black', fontWeight: 'bold', fontSize: '15px' }}>Average Purchase Price: $ {NumberofExpenses > 0
-                        ? parseFloat((totalAmount / NumberofExpenses).toFixed(2))
-                        : '0'}</p>
-                </div>
-
-                {/* LineGraph component */}
-               <div style={{ flex: 1 }}>
-                        {isDataFetched ? <LineGraph rawdataexpenses={expenses} /> : <LineGraph rawdataexpenses={[]} />}
-                </div>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <div
+                style={{
+                position: 'relative',
+                }}
+            >
+                {/* Credit card Text */}
+                <p style={{ textAlign: 'center', color: 'black', fontWeight: 'bold', fontSize: '18px' }}>
+                {IsSignedin? 'Total Expenses:':'(Guest-Demo) Total Expenses:'} ${totalamount} 
+                </p>
             </div>
-
-            <div style={{ flex: 1, paddingTop: '0px' }}>
-                    {isDataFetched ? <MapComponent expenses={expenses} /> : <MapComponent expenses={[]} /> }
-            </div>
-            </div>
+            <div>{isDataFetched ? <LineGraph rawdataexpenses={DashboardExpenseData} /> : <LineGraph rawdataexpenses={[]} />}</div>
+            <div>{isDataFetched ? <MapComponent expenses={DashboardExpenseData} /> : <MapComponent expenses={[]} />}</div>
         </div>
     );
 };
-
 export default Dashboard;

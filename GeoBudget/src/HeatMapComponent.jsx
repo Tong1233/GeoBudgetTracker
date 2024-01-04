@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // MapComponent.jsx
 
 /* global google */
@@ -79,7 +80,7 @@ const HeatMapComponent = ({ width, height, zoom, expenses }) => {
             });
         }
         
-    }, []);
+    }, [expenses]);
 
 
     const handleMap = () => {
@@ -94,7 +95,7 @@ const HeatMapComponent = ({ width, height, zoom, expenses }) => {
 
     const containerStyle = {
         width: width || '50vw', // Use the provided width or a default value
-        height: height || '80vh', // Use the provided height or a default value
+        height: height || '60vh', // Use the provided height or a default value
         margin: 'auto', // Center the map horizontally
     };
 

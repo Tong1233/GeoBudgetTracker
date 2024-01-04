@@ -1,107 +1,80 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddExpenseForm from './AddExpenseForm';
 
-const ExpensesComponent = ({CallBackDatabaseConnection}) => {
-    const [expenses, setExpenses] = useState([]);
-    const [IsDatabaseConnected, setIsDatabaseConnected] = useState(false);
-    const handleExpenseAdded = () => {
-        fetchExpenses();
-    };
+const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData}) => {
 
+    const [totalamount, settotalamount] = useState();
+    const [DashboardExpenseData, setDashboardExpenseData] = useState([]);
+    
     const handleDeleteExpense = async (expenseId) => {
-        try {
-            // Send a DELETE request to delete the expense by ID
-            await axios.delete(`https://geobackend.onrender.com/expenses/${expenseId}`);
-            // Fetch updated expenses after deletion
-            fetchExpenses();
-        } catch (error) {
-            console.error('Error deleting expense:', error);
+        
+        if(!IsSignedin) {
+            const indexToDelete = DemoData.findIndex(obj => obj.id === expenseId);
+            if (indexToDelete !== -1) {
+                DemoData.splice(indexToDelete, 1);
+                setDashboardExpenseData([...DemoData]);
+            }
+        }
+        else
+        {
+            try {
+                // Send a DELETE request to delete the expense by ID
+                await axios.delete(`https://geobackend.onrender.com/expenses/${expenseId}`);
+                // Fetch updated expenses after deletion
+                fetchExpenses();
+            } catch (error) {
+                console.error('Error deleting expense:', error);
+            }
         }
     };
 
     const fetchExpenses = () => {
-        fetch('https://geobackend.onrender.com/expenses')
+        fetch ('https://geobackend.onrender.com/expenses')
             .then(response => response.json())
             .then(data => {
                 setExpenses(data);
                 localStorage.setItem('expenses', JSON.stringify(data));
-                setIsDatabaseConnected(true);
             })
             .catch(error => {
-                setIsDatabaseConnected(false);
                 console.error('Error fetching expenses:', error);
             });
     };
 
-    const checkconnection = async () => {//to update path for just checking health
-        try {
-            const response = await fetch('https://geobackend.onrender.com/expenses'); // Replace with your actual endpoint
-            if (response.ok) {
-                return setIsDatabaseConnected(true);
-            } else {
-                return setIsDatabaseConnected(false);
-            }
-        } catch (error) {
-            console.error('Error checking database connection:', error);
-            return setIsDatabaseConnected(false);
+    useEffect(() => {
+        setDashboardExpenseData([]);
+        if(IsSignedin && expenses) {
+            setDashboardExpenseData(expenses);
         }
-    };
+        else {
+            setDashboardExpenseData(DemoData);
+        }
 
+    }, [IsSignedin, expenses, DemoData]);
 
     useEffect(() => {
-        //console.log("exp:"+ IsDatabaseConnected);
-        CallBackDatabaseConnection(IsDatabaseConnected);
-    }, [IsDatabaseConnected]);
+        settotalamount(calculateTotalAmount(DashboardExpenseData));
+    }, [DashboardExpenseData]);
 
-    function calculateTotalAmount(expenses) {
+
+   
+    function calculateTotalAmount(data) {
         let totalAmount = 0;
+        console.log(data);
 
-        for (let i = 0; i < expenses.length; i++) {
-            totalAmount += expenses[i].amount;
+        for (let i = 0; i < data.length; i++) {
+            totalAmount += data[i].amount;
         }
 
         return parseFloat(totalAmount.toFixed(2));
     }
 
-    const totalAmount = calculateTotalAmount(expenses);
-
-    useEffect(() => {
-        //setIsDatabaseConnected(checkconnection);
-        checkconnection();
-        //setIsDatabaseConnected(isConnected);
-        const cachedExpenses = JSON.parse(localStorage.getItem('expenses'));
-
-        if (cachedExpenses) {
-            setExpenses(cachedExpenses);
-        } else {
-            fetchExpenses();
-            //{console.log('data fetch')}
-        }
-
-        // Set up interval for periodic check (every 5 seconds)
-        const intervalId = setInterval(() => {
-            checkconnection();
-        }, 5000);
-
-        // Cleanup interval on component unmount
-        return () => clearInterval(intervalId);
-    }, []);
-
     return (
         <div style={{ display: 'flex' }}>
-            {/* Left side with input form */}
-            <div style={{ flex: 1}}>
-                <h2 style={{ color: 'black' }}>Add New Expenses:</h2>
-                <AddExpenseForm onExpenseAdded={handleExpenseAdded} />
-            </div>
-
-            {/* Right side with expenses table */}
-            <div style={{ flex: 2, marginRight: '10px', width: '50%'}}>
-                <h2 style={{ color: 'black' }}>Expenses:</h2>
                 <div style={styles.tableContainer}>
                 <table style={styles.table}>
-                    <thead>
+                    <thead style={{backgroundColor: '#aaffaa' }}>
                         <tr>
                             <th style={styles.tableCell}>Date</th>
                             <th style={styles.tableCell}>Name</th>
@@ -111,7 +84,7 @@ const ExpensesComponent = ({CallBackDatabaseConnection}) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {expenses.map((expense) => (
+                        {DashboardExpenseData.map((expense) => (
                             <tr key={expense.id}>
                                 <td style={{ ...styles.tableCell, padding: '0px' }}>{expense.date}</td>
                                 <td style={{ ...styles.tableCell, padding: '0px' }}>{expense.name}</td>
@@ -125,13 +98,12 @@ const ExpensesComponent = ({CallBackDatabaseConnection}) => {
                             {/* Totals row */}
                             <tr>
                                 <td style={styles.boldTableCell} colSpan={2}>Total</td>
-                                <td style={{ ...styles.boldTableCell, textAlign: 'center' }}>$ {totalAmount}</td>
+                                <td style={{ ...styles.boldTableCell, textAlign: 'center' }}>$ {totalamount}</td>
                             </tr>
                     </tbody>
                     </table>
                 </div>
             </div>
-        </div>
     );
 };
 
@@ -146,6 +118,7 @@ const styles = {
 
     table: {
         border: '1px solid black',
+        color: 'black',
         //maxWidth: '70vw',  // Adjust the width as needed
         borderCollapse: 'collapse',
         overflow: 'auto'
@@ -172,4 +145,4 @@ const styles = {
     },
 };
 
-export default ExpensesComponent;
+export default ExpensesTable;

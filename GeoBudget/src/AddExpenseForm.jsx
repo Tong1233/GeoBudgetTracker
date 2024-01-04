@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MapComponent from './MapComponent';
 
-const AddExpenseForm = ({ onExpenseAdded }) => {
+const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData }) => {
 
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
@@ -70,7 +70,26 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             console.error('Error in form data:', error);
         }
 
-        fetch('https://geobackend.onrender.com/expenses', {
+        if(!IsSignedin)
+        {
+            const combinedarray = [...DemoData, {
+                date,
+                name,
+                amount: parseFloat(amount),
+                description,
+                lat: currentLocation.lat, 
+                lng: currentLocation.lng, 
+            }]
+
+            setDemoData(combinedarray);
+            setColorDate('1px solid black');
+            setColorName('1px solid black');
+            setColorAmount('1px solid black');
+            setColorLocation('black');
+        }
+        else
+        {
+            fetch('https://geobackend.onrender.com/expenses', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -87,7 +106,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             .then(response => response.json())
             .then(data => {
                 onExpenseAdded();
-                //console.log(data);
+                //console.log(currentLocation.lat, currentLocation.lng);
                 setColorDate('1px solid black');
                 setColorName('1px solid black');
                 setColorAmount('1px solid black');
@@ -96,6 +115,8 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             .catch(error => {
                 console.error('Error adding expense:', error);
             });
+        }
+        
     };
 
     return (
@@ -103,16 +124,12 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: '23vw',
-            padding: '10px 0',  // Set top and bottom padding
-            paddingLeft: '12px',  // Set left padding
-            paddingRight: '25px',  // Set right padding
-            border: '1px solid black', // Add border for the rectangle
-            borderRadius: '20px', // Add rounded corners
+            maxWidth: '30vw',
+            //minWidth: '350px'
         }}>
 
             <div style={{ marginBottom: '2px', width: '100%' }}>
-                <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
+                <label style={{ marginBottom: '5px', textAlign: 'left', fontSize: '1.2rem',width: '100%' }}>
                     Date:
                     <input
                         type="text"
@@ -124,8 +141,8 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             </div>
 
             <div style={{ marginBottom: '2px', width: '100%' }}>
-                <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
-                    Name:
+                <label style={{ marginBottom: '5px', fontSize: '1.2rem',textAlign: 'left', width: '100%' }}>
+                    Title:
                     <input
                         type="text"
                         value={name}
@@ -137,7 +154,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             </div>
 
             <div style={{ marginBottom: '2px', width: '100%' }}>
-                <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
+                <label style={{ marginBottom: '5px', fontSize: '1.2rem', textAlign: 'left', width: '100%' }}>
                     Amount:
                     <input
                         type="number"
@@ -150,7 +167,7 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
             </div>
 
             <div style={{ marginBottom: '2px', width: '100%' }}>
-                <label style={{ marginBottom: '5px', textAlign: 'left', width: '100%' }}>
+                <label style={{ marginBottom: '5px', fontSize: '1.2rem', textAlign: 'left', width: '100%' }}>
                     Description:
                     <textarea
                         type="text"
@@ -181,9 +198,9 @@ const AddExpenseForm = ({ onExpenseAdded }) => {
                     Set Location (Required)
                 </button>
             </label>
-            <MapComponent width="24vw" height="35vh" zoom={9} currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}  CallBackLocation={handleMapEvent}/> 
-            <div style={{ marginTop: '10px', width: '40%' }}>
-                <button type="submit" style={{ width: '100%', padding: '10px', margin: 'auto' }}>Add Expense</button>
+            <MapComponent width="30vw" height="35vh" zoom={9} currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}  CallBackLocation={handleMapEvent}/> 
+            <div style={{ marginTop: '20px', width: '40%' }}>
+                <button type="submit" style={{ border: '1px solid black', width: '100%', padding: '10px', margin: 'auto' }}>Add Expense</button>
             </div>
         </form>
     );
