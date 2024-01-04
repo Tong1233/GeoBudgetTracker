@@ -14,6 +14,7 @@ import { jwtDecode } from "jwt-decode";
 library.add(faPowerOff, faFeatherPointed,faCircleUser);
 
 const GeoBudget = () => {
+    const serverlink='https://geobackend.onrender.com';
     const [expenses, setExpenses] = useState([]);
     const [DataOption, setDataOption] = useState("null");
     const [IsSignedin, setIsSignedIn] = useState(false);
@@ -23,18 +24,18 @@ const GeoBudget = () => {
         { role: 'assistant', content: "Hi, I'm FinanceAI. How can I help you today?" },
     ]);
 
-    const [DemoData, setDemoData] = useState([
-        { amount: 5.25, date: "2023-11-19", description: "Demo", id: 1, lat: 43.88311072589884, lng: -79.42899667734373, name: "THAI BASIL" },
-        { amount: 10, date: "2023-11-22", description: "Demo", id: 2, lat: 43.648511336460345, lng: -79.45822902217506, name: "Bags" },
-        { amount: 15, date: "2023-11-26", description: "Demo", id: 3, lat: 43.68642129894634, lng: -79.49096488028763, name: "Burger" },
-        { amount: 45, date: "2023-11-30", description: "Demo", id: 4, lat: 43.671324767421275, lng: -79.46833981860428, name: "Mcdonalds" },
-        { amount: 50, date: "2023-12-05", description: "Demo", id: 5, lat: 43.68625993409024, lng: -79.40879054561256, name: "Tickets" },
-        { amount: 20, date: "2023-12-10", description: "Demo", id: 6, lat: 43.653225, lng: -79.383186, name: "Coffee Shop" },
-        { amount: 35, date: "2023-12-15", description: "Demo", id: 7, lat: 43.6622719, lng: -79.3854297, name: "Bookstore" },
-        { amount: 25, date: "2023-12-20", description: "Demo", id: 8, lat: 43.6563221, lng: -79.3809161, name: "Electronics Store" },
-        { amount: 15, date: "2023-12-25", description: "Demo", id: 9, lat: 43.6602225, lng: -79.3825811, name: "Park" },
-        { amount: 30, date: "2023-12-30", description: "Demo", id: 10, lat: 43.6694032, lng: -79.4259675, name: "Ice Cream Shop" },
-      ]);
+    const [DemoData, setDemoData] = useState([]);
+
+    const Demoinfo = [{ amount: 5.25, date: "2023-11-19", description: "Demo", id: 1, lat: 43.88311072589884, lng: -79.42899667734373, name: "THAI BASIL" },
+    { amount: 10, date: "2023-11-22", description: "Demo", id: 2, lat: 43.648511336460345, lng: -79.45822902217506, name: "Bags" },
+    { amount: 15, date: "2023-11-26", description: "Demo", id: 3, lat: 43.68642129894634, lng: -79.49096488028763, name: "Burger" },
+    { amount: 45, date: "2023-11-30", description: "Demo", id: 4, lat: 43.671324767421275, lng: -79.46833981860428, name: "Mcdonalds" },
+    { amount: 50, date: "2023-12-05", description: "Demo", id: 5, lat: 43.68625993409024, lng: -79.40879054561256, name: "Tickets" },
+    { amount: 20, date: "2023-12-10", description: "Demo", id: 6, lat: 43.653225, lng: -79.383186, name: "Coffee Shop" },
+    { amount: 35, date: "2023-12-15", description: "Demo", id: 7, lat: 43.6622719, lng: -79.3854297, name: "Bookstore" },
+    { amount: 25, date: "2023-12-20", description: "Demo", id: 8, lat: 43.6563221, lng: -79.3809161, name: "Electronics Store" },
+    { amount: 15, date: "2023-12-25", description: "Demo", id: 9, lat: 43.6602225, lng: -79.3825811, name: "Park" },
+    { amount: 30, date: "2023-12-30", description: "Demo", id: 10, lat: 43.6694032, lng: -79.4259675, name: "Ice Cream Shop" },]
 
     const setExpensesCallback = (data) => {
         setExpenses(data);
@@ -59,7 +60,7 @@ const GeoBudget = () => {
       };
 
     const fetchExpenses = () => {
-        fetch ('https://geobackend.onrender.com/expenses')
+        fetch (serverlink + '/expenses')
             .then(response => response.json())
             .then(data => {
                 setExpenses(data);
@@ -72,7 +73,25 @@ const GeoBudget = () => {
     useEffect(() => {
         fetchExpenses();
         checkconnection();
-        setDataOption('demo');
+
+        setDataOption(localStorage.getItem('dataoption')) //gets cached storage option for ease of repeat use
+
+        switch (localStorage.getItem('dataoption')) {
+            case 'demo':
+                setDataOption('demo');
+                setDemoData(Demoinfo);
+                break;
+            case 'local':
+                setDataOption('local');
+                break
+            case 'server':
+                setDataOption('server');
+                break
+            default:
+                setDataOption('demo');
+                setDemoData(Demoinfo);
+        }
+
         // Set up interval for periodic check (every 2 seconds)
         const intervalId = setInterval(() => {
             checkconnection();
@@ -84,7 +103,7 @@ const GeoBudget = () => {
 
     const checkconnection = async () => {//to update path for just checking health
         try {
-            const response = await fetch('https://geobackend.onrender.com/expenses'); 
+            const response = await fetch(serverlink + '/expenses'); 
             if (response.ok) {
                 return setPower(true);
             } else {
@@ -98,6 +117,19 @@ const GeoBudget = () => {
 
     const handleDataOptionClick = (option) => {
         setDataOption(option);
+        //localStorage.setItem('key', 'value');
+        if (option == 'demo' && !IsSignedin){
+            setDemoData(Demoinfo);
+            localStorage.setItem('dataoption','demo');
+        }
+        else if (option == 'local'){
+            setDemoData([]);
+            localStorage.setItem('dataoption','local');
+        }
+        else if (option == 'server') {
+            setDemoData([]);
+            localStorage.setItem('dataoption','server');
+        }
       };
 
 
@@ -234,10 +266,10 @@ const GeoBudget = () => {
                 {/* Content */}
                 <div style={{ flex: 1, padding: '20px' }}>
                     <Routes>
-                        <Route path="/" element={<AIChat chatHistory={chatHistory} addMessageToChat={addMessageToChat}/>} />
+                        <Route path="/" element={<AIChat chatHistory={chatHistory} addMessageToChat={addMessageToChat} power={power} serverlink={serverlink}/>} />
                         <Route path="/DashBoard" element={<MainDashboard expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData}/>} />
-                        <Route path="/expenses" element={<ExpensesComponent expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData}/>} />
-                        <Route path="/expensestable" element={<ExpensesTable expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData}/>} />
+                        <Route path="/expenses" element={<ExpensesComponent expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink}/>} />
+                        <Route path="/expensestable" element={<ExpensesTable expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink}/>} />
                     </Routes>
                 </div>
             </div>

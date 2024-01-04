@@ -31,7 +31,7 @@ class LoadScriptOnlyIfNeeded extends LoadScript {
     }
 }
 
-const HeatMapComponent = ({ width, height, zoom, expenses }) => {
+const HeatMapComponent = ({ width, height, zoom, expenses}) => {
 
     const [isScriptLoaded, setScriptLoaded] = useState(false);
     const [showHeatMap, setshowHeatMap] = useState(false);

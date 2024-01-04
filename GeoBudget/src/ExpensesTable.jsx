@@ -3,26 +3,27 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddExpenseForm from './AddExpenseForm';
 
-const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData}) => {
+const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption}) => {
 
     const [totalamount, settotalamount] = useState();
     const [DashboardExpenseData, setDashboardExpenseData] = useState([]);
     
     const handleDeleteExpense = async (expenseId) => {
         
-        if(!IsSignedin) {
+        if(!IsSignedin && DataOption == 'demo') {
             const indexToDelete = DemoData.findIndex(obj => obj.id === expenseId);
             if (indexToDelete !== -1) {
                 DemoData.splice(indexToDelete, 1);
                 setDashboardExpenseData([...DemoData]);
             }
         }
-        else
-        {
+        else if (DataOption == 'local') {
+            localStorage.removeItem(expenseId);
+        }
+        else if (DataOption == 'server' && IsSignedin) {
             try {
                 // Send a DELETE request to delete the expense by ID
-                await axios.delete(`https://geobackend.onrender.com/expenses/${expenseId}`);
-                // Fetch updated expenses after deletion
+                await axios.delete(serverlink +`/expenses/${expenseId}`);
                 fetchExpenses();
             } catch (error) {
                 console.error('Error deleting expense:', error);
@@ -31,7 +32,7 @@ const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData
     };
 
     const fetchExpenses = () => {
-        fetch ('https://geobackend.onrender.com/expenses')
+        fetch (serverlink + '/expenses')
             .then(response => response.json())
             .then(data => {
                 setExpenses(data);
@@ -44,7 +45,7 @@ const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData
 
     useEffect(() => {
         setDashboardExpenseData([]);
-        if(IsSignedin && expenses) {
+        if((DataOption == 'local' || DataOption == 'server' ) && expenses) {
             setDashboardExpenseData(expenses);
         }
         else {
@@ -58,7 +59,6 @@ const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData
     }, [DashboardExpenseData]);
 
 
-   
     function calculateTotalAmount(data) {
         let totalAmount = 0;
         //console.log(data);

@@ -58,8 +58,10 @@ const MapComponent = ({ width, height, zoom, currentLocation, setCurrentLocation
 
 
     const containerStyle = {
-        width: width || '80vw', // Use the provided width or a default value
-        height: height || '80vh', // Use the provided height or a default value
+        width: width, // Use the provided width or a default value
+        height: height, // Use the provided height or a default value
+        maxwidth: '450px',
+        maxheight: '450px',
         margin: 'auto', // Center the map horizontally
     };
 

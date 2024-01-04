@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MapComponent from './MapComponent';
 
-const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData }) => {
+const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, serverlink }) => {
 
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
@@ -89,7 +89,7 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData }) =
         }
         else
         {
-            fetch('https://geobackend.onrender.com/expenses', {
+            fetch(serverlink +'/expenses', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,7 +124,8 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData }) =
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            maxWidth: '30vw',
+            width: '100vw',
+            maxWidth: '450px',
             //minWidth: '350px'
         }}>
 
@@ -198,7 +199,7 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData }) =
                     Set Location (Required)
                 </button>
             </label>
-            <MapComponent width="30vw" height="35vh" zoom={9} currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}  CallBackLocation={handleMapEvent}/> 
+            <MapComponent width="460px" height="300px" zoom={9} currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}  CallBackLocation={handleMapEvent}/> 
             <div style={{ marginTop: '20px', width: '40%' }}>
                 <button type="submit" style={{ border: '1px solid black', width: '100%', padding: '10px', margin: 'auto' }}>Add Expense</button>
             </div>

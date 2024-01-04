@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPowerOff, faFeatherPointed } from '@fortawesome/free-solid-svg-icons';
 library.add(faPowerOff, faFeatherPointed);
 
-const AIChat = ({chatHistory, addMessageToChat, user, expenses, IsSignedin, DemoData}) => {
+const AIChat = ({chatHistory, addMessageToChat, user, expenses, IsSignedin, DemoData, power, DataOption}) => {
 
 const [userInput, setUserInput] = useState('');
 const [ailoading, setailoading] = useState(false);
@@ -23,6 +23,7 @@ const scrollToBottom = () => {
   };
 
   const generateAIresponse = async (UserMessage, TempChatHistory) => {
+    
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -42,7 +43,12 @@ const scrollToBottom = () => {
       return completion.choices[0].message.content
     } catch (error) {
       console.error('Error generating AI response:', error);
-      return 'Sorry, an error occurred while generating the AI response.';
+      if(!power)
+      {
+        return 'Sorry, I am currently connecting to the server. Please wait a few seconds until the profile icon turns green. In the meantime, please try the other features.'
+      }
+      else
+        return 'Sorry, an error occurred while generating the AI response.';
     }
   };
 

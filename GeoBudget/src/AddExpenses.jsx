@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddExpenseForm from './AddExpenseForm';
 
-const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData}) => {
+const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption}) => {
 
     const handleExpenseAdded = () => {
         if(!IsSignedin) {
@@ -15,7 +15,7 @@ const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemo
     };
 
     const fetchExpenses = () => {
-        fetch('https://geobackend.onrender.com/expenses')
+        fetch(serverlink + '/expenses')
             .then(response => response.json())
             .then(data => {
                 setExpenses(data);
@@ -30,7 +30,7 @@ const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemo
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
             {/* Left side with input form */}
             <div style={{ flex: 1}}>
-                <AddExpenseForm onExpenseAdded={handleExpenseAdded} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} />
+                <AddExpenseForm onExpenseAdded={handleExpenseAdded} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} />
             </div>
 
         </div>

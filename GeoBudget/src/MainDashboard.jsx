@@ -4,15 +4,15 @@ import MapComponent from './HeatMapComponent';
 import LineGraph from './LineGraph';
 
 
-const Dashboard = ({expenses, setExpenses, IsSignedin, DemoData}) => {
-    const [isDataFetched, setIsDataFetched] = useState(false);
+const Dashboard = ({expenses, setExpenses, IsSignedin, DemoData, DataOption}) => {
+    //const [isDataFetched, setIsDataFetched] = useState(false);
     const [DashboardExpenseData, setDashboardExpenseData] = useState([]);
     const [totalamount, settotalamount] = useState();
 
     useEffect(() => {
         if(IsSignedin && expenses) {
             setDashboardExpenseData(expenses);
-            setIsDataFetched(true);
+          
         }
         else {
             setDashboardExpenseData(DemoData);
@@ -27,7 +27,6 @@ const Dashboard = ({expenses, setExpenses, IsSignedin, DemoData}) => {
     useEffect(() => {
         if(IsSignedin == false) {
             setDashboardExpenseData(DemoData);
-            setIsDataFetched(true);
         }
        
     }, []);
@@ -55,8 +54,8 @@ const Dashboard = ({expenses, setExpenses, IsSignedin, DemoData}) => {
                 {IsSignedin? 'Total Expenses:':'(Guest-Demo) Total Expenses:'} ${totalamount} 
                 </p>
             </div>
-            <div>{isDataFetched ? <LineGraph rawdataexpenses={DashboardExpenseData} /> : <LineGraph rawdataexpenses={[]} />}</div>
-            <div>{isDataFetched ? <MapComponent expenses={DashboardExpenseData} /> : <MapComponent expenses={[]} />}</div>
+            <div> <LineGraph rawdataexpenses={DashboardExpenseData} /> </div>
+            <div> <MapComponent expenses={DashboardExpenseData}/> </div>
         </div>
     );
 };
