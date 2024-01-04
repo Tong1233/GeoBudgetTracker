@@ -61,7 +61,7 @@ const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData
    
     function calculateTotalAmount(data) {
         let totalAmount = 0;
-        console.log(data);
+        //console.log(data);
 
         for (let i = 0; i < data.length; i++) {
             totalAmount += data[i].amount;

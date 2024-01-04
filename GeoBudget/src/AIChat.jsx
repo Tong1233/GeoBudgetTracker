@@ -28,7 +28,7 @@ const scrollToBottom = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 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', // Replace with your API key
+          'Authorization': 'Bearer ' + import.meta.env.VITE_OPENAI_API_KEY, // Replace with your API key
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
@@ -37,7 +37,7 @@ const scrollToBottom = () => {
         }),
       });
       const completion = await response.json();
-      console.log([{ role: 'system', content: "You are a helpful assistant. Respond concisely if the user content is not related to finance" },...TempChatHistory, UserMessage], "in gen AI");
+      //console.log([{ role: 'system', content: "You are a helpful assistant. Respond concisely if the user content is not related to finance" },...TempChatHistory, UserMessage], "in gen AI");
       setailoading(false)
       return completion.choices[0].message.content
     } catch (error) {

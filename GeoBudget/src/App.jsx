@@ -213,7 +213,7 @@ const GeoBudget = () => {
                         {IsSignedin ? (
                             <button onClick={handleLogout}>Logout</button>
                             ) : (
-                            <GoogleOAuthProvider clientId="1085523123453-qij2tol108bgcnlmu7p2obrqtqtit1il.apps.googleusercontent.com">
+                            <GoogleOAuthProvider clientId={import.meta.env.VITE_API_KEY1}>
                             <GoogleLogin
                             onSuccess={handleLoginSuccess}
                             onError={() => {
