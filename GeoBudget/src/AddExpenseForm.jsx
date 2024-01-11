@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MapComponent from './MapComponent';
 
-const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, serverlink }) => {
+const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, serverlink, user, DataOption }) => {
 
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');

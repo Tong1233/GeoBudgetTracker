@@ -14,7 +14,8 @@ import { jwtDecode } from "jwt-decode";
 library.add(faPowerOff, faFeatherPointed,faCircleUser);
 
 const GeoBudget = () => {
-    const serverlink='https://geobackend.onrender.com';
+    //const serverlink='https://geobackend.onrender.com';
+    const serverlink='http://localhost:5000/';
     const [expenses, setExpenses] = useState([]);
     const [DataOption, setDataOption] = useState("null");
     const [IsSignedin, setIsSignedIn] = useState(false);
@@ -59,11 +60,26 @@ const GeoBudget = () => {
         setUser(null);
       };
 
+    const fetchLocalExpenses = () => {
+        
+        
+        fetch (serverlink + '/expenses')
+            .then(response => response.json())
+            .then(data => {
+                setExpenses(data);
+                localStorage.setItem('expenses', JSON.stringify(data));
+            })
+            .catch(error => {
+                console.error('Error fetching expenses:', error);
+            });
+    };
+
     const fetchExpenses = () => {
         fetch (serverlink + '/expenses')
             .then(response => response.json())
             .then(data => {
                 setExpenses(data);
+                localStorage.setItem('expenses', JSON.stringify(data));
             })
             .catch(error => {
                 console.error('Error fetching expenses:', error);
@@ -103,7 +119,7 @@ const GeoBudget = () => {
 
     const checkconnection = async () => {//to update path for just checking health
         try {
-            const response = await fetch(serverlink + '/expenses'); 
+            const response = await fetch(serverlink + "/"); 
             if (response.ok) {
                 return setPower(true);
             } else {
@@ -124,10 +140,12 @@ const GeoBudget = () => {
         }
         else if (option == 'local'){
             setDemoData([]);
+            setExpenses([]);
             localStorage.setItem('dataoption','local');
         }
         else if (option == 'server') {
             setDemoData([]);
+            setExpenses([]);
             localStorage.setItem('dataoption','server');
         }
       };
@@ -266,10 +284,10 @@ const GeoBudget = () => {
                 {/* Content */}
                 <div style={{ flex: 1, padding: '20px' }}>
                     <Routes>
-                        <Route path="/" element={<AIChat chatHistory={chatHistory} addMessageToChat={addMessageToChat} power={power} serverlink={serverlink}/>} />
-                        <Route path="/DashBoard" element={<MainDashboard expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData}/>} />
-                        <Route path="/expenses" element={<ExpensesComponent expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink}/>} />
-                        <Route path="/expensestable" element={<ExpensesTable expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink}/>} />
+                        <Route path="/" element={<AIChat chatHistory={chatHistory} addMessageToChat={addMessageToChat} power={power} serverlink={serverlink} DataOption={DataOption}/>} />
+                        <Route path="/DashBoard" element={<MainDashboard expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} DataOption={DataOption}/>} />
+                        <Route path="/expenses" element={<ExpensesComponent expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} DataOption={DataOption} user={user}/>} />
+                        <Route path="/expensestable" element={<ExpensesTable expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} DataOption={DataOption} fetchExpenses={fetchExpenses}/>} />
                     </Routes>
                 </div>
             </div>

@@ -12,7 +12,6 @@ const Dashboard = ({expenses, setExpenses, IsSignedin, DemoData, DataOption}) =>
     useEffect(() => {
         if(IsSignedin && expenses) {
             setDashboardExpenseData(expenses);
-          
         }
         else {
             setDashboardExpenseData(DemoData);

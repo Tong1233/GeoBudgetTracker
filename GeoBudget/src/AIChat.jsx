@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPowerOff, faFeatherPointed } from '@fortawesome/free-solid-svg-icons';
 library.add(faPowerOff, faFeatherPointed);
 
-const AIChat = ({chatHistory, addMessageToChat, user, expenses, IsSignedin, DemoData, power, DataOption}) => {
+const AIChat = ({chatHistory, addMessageToChat, user, expenses, IsSignedin, DemoData, power, serverlink, DataOption}) => {
 
 const [userInput, setUserInput] = useState('');
 const [ailoading, setailoading] = useState(false);
@@ -25,23 +25,22 @@ const scrollToBottom = () => {
   const generateAIresponse = async (UserMessage, TempChatHistory) => {
     
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const response = await fetch(serverlink + '/generate_prompt', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + import.meta.env.VITE_OPENAI_API_KEY, // Replace with your API key
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: 'system', content: "You are a helpful assistant. Respond concisely within 50 tokens. If the prompt is off-topic, remind the user you are a finance assistant." },...TempChatHistory, UserMessage],
-          max_tokens: 50
+          prompt: UserMessage,
+          history: TempChatHistory
         }),
       });
-      const completion = await response.json();
+      const completion = await response.text();
       //console.log([{ role: 'system', content: "You are a helpful assistant. Respond concisely if the user content is not related to finance" },...TempChatHistory, UserMessage], "in gen AI");
       setailoading(false)
-      return completion.choices[0].message.content
+      return completion
     } catch (error) {
+      setailoading(false)
       console.error('Error generating AI response:', error);
       if(!power)
       {

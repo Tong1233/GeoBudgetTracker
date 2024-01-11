@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddExpenseForm from './AddExpenseForm';
 
-const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption}) => {
+const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption, user, fetchExpenses}) => {
 
     const handleExpenseAdded = () => {
         if(!IsSignedin) {
@@ -14,23 +14,11 @@ const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemo
         }
     };
 
-    const fetchExpenses = () => {
-        fetch(serverlink + '/expenses')
-            .then(response => response.json())
-            .then(data => {
-                setExpenses(data);
-                localStorage.setItem('expenses', JSON.stringify(data));
-            })
-            .catch(error => {
-                console.error('Error fetching expenses:', error);
-            });
-    };
-
     return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
             {/* Left side with input form */}
             <div style={{ flex: 1}}>
-                <AddExpenseForm onExpenseAdded={handleExpenseAdded} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} />
+                <AddExpenseForm onExpenseAdded={handleExpenseAdded} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} user={user} DataOption={DataOption}/>
             </div>
 
         </div>

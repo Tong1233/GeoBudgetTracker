@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddExpenseForm from './AddExpenseForm';
 
-const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption}) => {
+const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption, fetchExpenses}) => {
 
     const [totalamount, settotalamount] = useState();
     const [DashboardExpenseData, setDashboardExpenseData] = useState([]);
@@ -29,18 +29,6 @@ const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData
                 console.error('Error deleting expense:', error);
             }
         }
-    };
-
-    const fetchExpenses = () => {
-        fetch (serverlink + '/expenses')
-            .then(response => response.json())
-            .then(data => {
-                setExpenses(data);
-                localStorage.setItem('expenses', JSON.stringify(data));
-            })
-            .catch(error => {
-                console.error('Error fetching expenses:', error);
-            });
     };
 
     useEffect(() => {
