@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import MapComponent from './MapComponent';
+import { Data } from '@react-google-maps/api';
 
 const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, serverlink, user, DataOption }) => {
 
@@ -14,6 +15,8 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
     const [formColorName, setColorName] = useState('1px solid black');
     const [formColorAmount, setColorAmount] = useState('1px solid black');
     const [formColorLocation, setColorLocation] = useState('black');
+    const [buttonText, setButtonText] = useState('Add Expense');
+    const [buttonColor, setButtonColor] = useState('');
 
     const handleMapEvent = (event) => {
         
@@ -23,6 +26,20 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
         return;
        
     };
+
+    const handleButtonClick = () => {
+        // Assuming you have some logic to add the expense here
+    
+        // Change the button text to 'added!' and set background color to green
+        setButtonText('Added!');
+        setButtonColor('lightgreen');
+    
+        // Reset the button text and background color after 3 seconds
+        setTimeout(() => {
+          setButtonText('Add Expense');
+          setButtonColor('');
+        }, 1000);
+      };
 
     const getCurrentLocation = () => {
         if (navigator.geolocation) {
@@ -70,7 +87,7 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
             console.error('Error in form data:', error);
         }
 
-        if(!IsSignedin)
+        if(!IsSignedin && DataOption == 'demo')
         {
             const combinedarray = [...DemoData, {
                 date,
@@ -87,7 +104,30 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
             setColorAmount('1px solid black');
             setColorLocation('black');
         }
-        else
+        else if(DataOption == 'local')
+        {
+            
+            const financeAICount = localStorage.length;
+
+            const timestamp = new Date().getTime(); // Using timestamp as part of the key
+
+            const ID = `FinanceAI_${financeAICount + 1}_${timestamp}`; 
+            
+            localStorage.setItem(ID, JSON.stringify({date,
+                name,
+                amount: parseFloat(amount),
+                description,
+                id: ID,
+                lat: currentLocation.lat, 
+                lng: currentLocation.lng,
+            }));
+            onExpenseAdded();
+            setColorDate('1px solid black');
+            setColorName('1px solid black');
+            setColorAmount('1px solid black');
+            setColorLocation('black');
+        }
+        else if (IsSignedin && DataOption == 'server')
         {
             fetch(serverlink +'/expenses', {
             method: 'POST',
@@ -201,7 +241,7 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
             </label>
             <MapComponent width="460px" height="300px" zoom={9} currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}  CallBackLocation={handleMapEvent}/> 
             <div style={{ marginTop: '20px', width: '40%' }}>
-                <button type="submit" style={{ border: '1px solid black', width: '100%', padding: '10px', margin: 'auto' }}>Add Expense</button>
+                <button type="submit" onClick={handleButtonClick} style={{ border: '1px solid black', width: '100%', padding: '10px', margin: 'auto', backgroundColor: buttonColor }}>{buttonText}</button>
             </div>
         </form>
     );

@@ -48,8 +48,14 @@ const GeoBudget = () => {
 
     const handleLoginSuccess = async (response) => {
         setIsSignedIn(true);
+
+        if(DataOption==='demo'){
+            setDataOption('server');
+            fetchExpenses();
+        }
+
         const profileObj = jwtDecode(response.credential)
-        console.log('Login Success!:', profileObj);
+        //console.log('Login Success!:', profileObj);
         setUser(profileObj);    
         //console.log(response.profileObj.name);
     };
@@ -61,35 +67,45 @@ const GeoBudget = () => {
       };
 
     const fetchLocalExpenses = () => {
-        
-        
-        fetch (serverlink + '/expenses')
-            .then(response => response.json())
-            .then(data => {
-                setExpenses(data);
-                localStorage.setItem('expenses', JSON.stringify(data));
-            })
-            .catch(error => {
-                console.error('Error fetching expenses:', error);
-            });
+        const items = []
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+    
+            // Check if the key contains 'FinanceAI'
+            if (key.includes('FinanceAI')) {
+              // Retrieve the value from local storage
+              const value = localStorage.getItem(key);
+                
+              // Parse the value (assuming it's stored as JSON)
+              try {
+                const valueObject = JSON.parse(value);
+                items.push(valueObject);
+              } catch (error) {
+                // Handle JSON parsing error if needed
+                console.error(`Error parsing JSON for key ${key}: ${error.message}`);
+              }
+            }
+        }
+        setExpenses(items);
     };
 
     const fetchExpenses = () => {
-        fetch (serverlink + '/expenses')
-            .then(response => response.json())
-            .then(data => {
-                setExpenses(data);
-                localStorage.setItem('expenses', JSON.stringify(data));
-            })
-            .catch(error => {
-                console.error('Error fetching expenses:', error);
-            });
+        if(IsSignedin)
+        {
+            fetch (serverlink + '/expenses')
+                .then(response => response.json())
+                .then(data => {
+                    setExpenses(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching expenses:', error);
+                });
+        }
     };
 
     useEffect(() => {
-        fetchExpenses();
         checkconnection();
-
         setDataOption(localStorage.getItem('dataoption')) //gets cached storage option for ease of repeat use
 
         switch (localStorage.getItem('dataoption')) {
@@ -99,9 +115,11 @@ const GeoBudget = () => {
                 break;
             case 'local':
                 setDataOption('local');
+                fetchLocalExpenses();
                 break
             case 'server':
                 setDataOption('server');
+                fetchExpenses();
                 break
             default:
                 setDataOption('demo');
@@ -142,11 +160,13 @@ const GeoBudget = () => {
             setDemoData([]);
             setExpenses([]);
             localStorage.setItem('dataoption','local');
+            fetchLocalExpenses();
         }
         else if (option == 'server') {
             setDemoData([]);
             setExpenses([]);
             localStorage.setItem('dataoption','server');
+            fetchExpenses();
         }
       };
 
@@ -177,7 +197,7 @@ const GeoBudget = () => {
                          Welcome {user?.name ?? 'Guest-Demo'}
                     </div>
                     <div style={{ marginBottom: '20px', marginTop: '20px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>  
-                        <FontAwesomeIcon icon={faCircleUser} style={{ color: power ? 'green' : 'red', fontSize: 120 }}/>
+                        <FontAwesomeIcon icon={faCircleUser} style={{ color: power ? 'lightgreen' : 'red', fontSize: 120 }}/>
                     </div>
 
                     {/* Navigation Links */}
@@ -210,6 +230,7 @@ const GeoBudget = () => {
                     </div>
                     
                 <div style={{ fontWeight: 500, fontSize: '16px'}}>
+                    {!IsSignedin ? (
                     <div className="mb-2">
                         <label style={{ color: DataOption === 'demo' ? 'green' : 'black' }}>
                         <input
@@ -224,7 +245,7 @@ const GeoBudget = () => {
                         />
                         Random Data (Demo)
                         </label>
-                    </div>
+                    </div>):null}
 
                     <div className="mb-2">
                         <label style={{ color: DataOption === 'local' ? 'green' : 'black' }}>
@@ -286,8 +307,8 @@ const GeoBudget = () => {
                     <Routes>
                         <Route path="/" element={<AIChat chatHistory={chatHistory} addMessageToChat={addMessageToChat} power={power} serverlink={serverlink} DataOption={DataOption}/>} />
                         <Route path="/DashBoard" element={<MainDashboard expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} DataOption={DataOption}/>} />
-                        <Route path="/expenses" element={<ExpensesComponent expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} DataOption={DataOption} user={user}/>} />
-                        <Route path="/expensestable" element={<ExpensesTable expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} DataOption={DataOption} fetchExpenses={fetchExpenses}/>} />
+                        <Route path="/expenses" element={<ExpensesComponent expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} DataOption={DataOption} user={user} fetchExpenses={fetchExpenses} fetchLocalExpenses={fetchLocalExpenses}/>} />
+                        <Route path="/expensestable" element={<ExpensesTable expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} DataOption={DataOption} fetchExpenses={fetchExpenses} fetchLocalExpenses={fetchLocalExpenses}/>} />
                     </Routes>
                 </div>
             </div>

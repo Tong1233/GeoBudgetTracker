@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddExpenseForm from './AddExpenseForm';
 
-const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption, fetchExpenses}) => {
+const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption, fetchExpenses, fetchLocalExpenses}) => {
 
     const [totalamount, settotalamount] = useState();
     const [DashboardExpenseData, setDashboardExpenseData] = useState([]);
@@ -19,6 +19,7 @@ const ExpensesTable = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData
         }
         else if (DataOption == 'local') {
             localStorage.removeItem(expenseId);
+            fetchLocalExpenses();
         }
         else if (DataOption == 'server' && IsSignedin) {
             try {

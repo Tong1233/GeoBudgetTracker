@@ -10,7 +10,7 @@ const Dashboard = ({expenses, setExpenses, IsSignedin, DemoData, DataOption}) =>
     const [totalamount, settotalamount] = useState();
 
     useEffect(() => {
-        if(IsSignedin && expenses) {
+        if((IsSignedin && DataOption=='server') || DataOption=='local') {
             setDashboardExpenseData(expenses);
         }
         else {
@@ -22,14 +22,6 @@ const Dashboard = ({expenses, setExpenses, IsSignedin, DemoData, DataOption}) =>
     useEffect(() => {
         settotalamount(calculateTotalAmount(DashboardExpenseData));
     }, [DashboardExpenseData]);
-
-    useEffect(() => {
-        if(IsSignedin == false) {
-            setDashboardExpenseData(DemoData);
-        }
-       
-    }, []);
-
    
     function calculateTotalAmount(data) {
         let totalAmount = 0;

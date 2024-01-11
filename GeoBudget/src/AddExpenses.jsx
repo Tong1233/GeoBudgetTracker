@@ -3,14 +3,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddExpenseForm from './AddExpenseForm';
 
-const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption, user, fetchExpenses}) => {
+const ExpensesComponent = ({expenses, setExpenses, IsSignedin, DemoData, setDemoData, serverlink, DataOption, user, fetchExpenses, fetchLocalExpenses}) => {
 
     const handleExpenseAdded = () => {
-        if(!IsSignedin) {
+        if(!IsSignedin && DataOption == 'demo') {
             setDemoData([...DemoData]);
         }
-        else{
+        else if (IsSignedin && DataOption == 'server') {
             fetchExpenses();
+        }
+        else if (DataOption == 'local') {
+            fetchLocalExpenses();
         }
     };
 
