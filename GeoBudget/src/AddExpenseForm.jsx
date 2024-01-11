@@ -27,20 +27,6 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
        
     };
 
-    const handleButtonClick = () => {
-        // Assuming you have some logic to add the expense here
-    
-        // Change the button text to 'added!' and set background color to green
-        setButtonText('Added!');
-        setButtonColor('lightgreen');
-    
-        // Reset the button text and background color after 3 seconds
-        setTimeout(() => {
-          setButtonText('Add Expense');
-          setButtonColor('');
-        }, 1000);
-      };
-
     const getCurrentLocation = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -60,34 +46,46 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        let mistake=false;
+        let buttonerrortext='Error' 
 
         try {
 
             if (typeof date !== 'string' || date.trim().length === 0) {
                 setColorDate('2px solid red');
+                mistake=true;
             }
 
             // Validate name
             if (typeof name !== 'string' || name.trim().length === 0) {
                 setColorName('2px solid red');
+                mistake=true;
             }
 
             // Validate amount
             const amountValue = parseFloat(amount);
             if (isNaN(amountValue)) {
                 setColorAmount('2px solid red');
+                mistake=true;
             }
 
             // Validate lat and lng
            
-            if (currentLocation ==null) {
+            if (currentLocation==null) {
                 setColorLocation('red');
+                mistake=true;
+            }
+
+            if(DataOption==='server' && !IsSignedin) {
+                mistake=true;
+                buttonerrortext='Need Login'
             }
         } catch (error) {
             console.error('Error in form data:', error);
+            mistake=true;
         }
 
-        if(!IsSignedin && DataOption == 'demo')
+        if(!mistake && !IsSignedin && DataOption == 'demo')
         {
             const combinedarray = [...DemoData, {
                 date,
@@ -103,8 +101,9 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
             setColorName('1px solid black');
             setColorAmount('1px solid black');
             setColorLocation('black');
+            mistake=false;
         }
-        else if(DataOption == 'local')
+        else if(!mistake && DataOption == 'local')
         {
             
             const financeAICount = localStorage.length;
@@ -126,11 +125,11 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
             setColorName('1px solid black');
             setColorAmount('1px solid black');
             setColorLocation('black');
+            mistake=false;
         }
-        else if (IsSignedin && DataOption == 'server' && user)
+        else if (!mistake && IsSignedin && DataOption == 'server' && user)
         {
             const email = user.email;
-            console.log(email);
             fetch(serverlink +'/addexpenses', {
             method: 'POST',
             headers: {
@@ -149,16 +148,34 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
             .then(response => response.json())
             .then(data => {
                 onExpenseAdded();
-                //console.log(currentLocation.lat, currentLocation.lng);
                 setColorDate('1px solid black');
                 setColorName('1px solid black');
                 setColorAmount('1px solid black');
                 setColorLocation('black');
+                mistake=false;
             })
             .catch(error => {
                 console.error('Error adding expense:', error);
+                mistake=true;
+                buttonerrortext='Error';
             });
         }
+
+        if(mistake){
+            setButtonText(buttonerrortext);
+            setButtonColor('red');
+        }
+        else {
+            setButtonText('Added!');
+            setButtonColor('lightgreen');
+        }
+        
+    
+        // Reset the button text and background color after 3 seconds
+        setTimeout(() => {
+          setButtonText('Add Expense');
+          setButtonColor('');
+        }, 1000);
         
     };
 
@@ -244,7 +261,7 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
             </label>
             <MapComponent width="460px" height="300px" zoom={9} currentLocation={currentLocation} setCurrentLocation={setCurrentLocation}  CallBackLocation={handleMapEvent}/> 
             <div style={{ marginTop: '20px', width: '40%' }}>
-                <button type="submit" onClick={handleButtonClick} style={{ border: '1px solid black', width: '100%', padding: '10px', margin: 'auto', backgroundColor: buttonColor }}>{buttonText}</button>
+                <button type="submit" style={{ border: '1px solid black', width: '100%', padding: '10px', margin: 'auto', backgroundColor: buttonColor }}>{buttonText}</button>
             </div>
         </form>
     );
