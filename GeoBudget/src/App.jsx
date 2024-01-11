@@ -48,22 +48,29 @@ const GeoBudget = () => {
 
     const handleLoginSuccess = async (response) => {
         setIsSignedIn(true);
-
         if(DataOption==='demo'){
             setDataOption('server');
             fetchExpenses();
         }
 
         const profileObj = jwtDecode(response.credential)
-        //console.log('Login Success!:', profileObj);
         setUser(profileObj);    
-        //console.log(response.profileObj.name);
     };
+
+    useEffect(() => {
+        if (IsSignedin && DataOption === 'server') {
+            fetchExpenses();
+        }
+    }, [IsSignedin]); // Dependency array ensures useEffect runs when isSignedIn or DataOption changes
 
     const handleLogout = () => {
         googleLogout();
         setIsSignedIn(false);
         setUser(null);
+        if(DataOption=='server')
+        {
+            setExpenses([])
+        }
       };
 
     const fetchLocalExpenses = () => {
@@ -90,17 +97,38 @@ const GeoBudget = () => {
         setExpenses(items);
     };
 
-    const fetchExpenses = () => {
+    const fetchExpenses = async () => {
         if(IsSignedin)
         {
-            fetch (serverlink + '/expenses')
-                .then(response => response.json())
-                .then(data => {
-                    setExpenses(data);
-                })
-                .catch(error => {
-                    console.error('Error fetching expenses:', error);
+            try {
+                // Assuming user is an object with an email property
+                const userEmail = user.email;
+                
+                // Display loading state if needed
+        
+                const response = await fetch(`${serverlink}/getexpenses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: userEmail,
+                    }),
                 });
+        
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch expenses. Status: ${response.status}`);
+                }
+              
+                const data = await response.json();
+               
+                setExpenses(data);
+        
+                // Remove loading state if needed
+            } catch (error) {
+                console.error('Error fetching expenses:', error);
+                // Handle the error, possibly show an error message to the user
+            }
         }
     };
 
@@ -197,7 +225,7 @@ const GeoBudget = () => {
                          Welcome {user?.name ?? 'Guest-Demo'}
                     </div>
                     <div style={{ marginBottom: '20px', marginTop: '20px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>  
-                        <FontAwesomeIcon icon={faCircleUser} style={{ color: power ? 'lightgreen' : 'red', fontSize: 120 }}/>
+                        <FontAwesomeIcon icon={faCircleUser} style={{ color: power ? 'green' : 'red', fontSize: 120 }}/>
                     </div>
 
                     {/* Navigation Links */}

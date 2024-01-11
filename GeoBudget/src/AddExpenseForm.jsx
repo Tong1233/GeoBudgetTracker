@@ -127,14 +127,17 @@ const AddExpenseForm = ({ onExpenseAdded, IsSignedin, DemoData, setDemoData, ser
             setColorAmount('1px solid black');
             setColorLocation('black');
         }
-        else if (IsSignedin && DataOption == 'server')
+        else if (IsSignedin && DataOption == 'server' && user)
         {
-            fetch(serverlink +'/expenses', {
+            const email = user.email;
+            console.log(email);
+            fetch(serverlink +'/addexpenses', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                email,
                 date,
                 name,
                 amount: parseFloat(amount),
