@@ -15,7 +15,8 @@ library.add(faPowerOff, faFeatherPointed,faCircleUser);
 
 const GeoBudget = () => {
     //const serverlink='https://geobackend.onrender.com';
-    const serverlink='http://localhost:5000/';
+    //const serverlink='http://localhost:5000/';
+    const serverlink='https://geobackend.fly.dev/';
     const [expenses, setExpenses] = useState([]);
     const [DataOption, setDataOption] = useState("null");
     const [IsSignedin, setIsSignedIn] = useState(false);
