@@ -23,35 +23,35 @@ const scrollToBottom = () => {
     }
   };
 
-  const generateAIresponse = async (UserMessage, TempChatHistory) => {
-    
-    try {
-      const response = await fetch(serverlink + '/generate_prompt', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: UserMessage,
-          history: TempChatHistory,
-          expenses: (DataOption!='demo')? expenses:DemoData
-        }),
-      });
-      const completion = await response.text();
-      //console.log([{ role: 'system', content: "You are a helpful assistant. Respond concisely if the user content is not related to finance" },...TempChatHistory, UserMessage], "in gen AI");
-      setailoading(false)
-      return completion
-    } catch (error) {
-      setailoading(false)
-      console.error('Error generating AI response:', error);
-      if(!power)
-      {
-        return 'Sorry, I am currently connecting to the server. Please wait a few seconds until the profile icon turns green. In the meantime, please try the other features.'
-      }
-      else
-        return 'Sorry, an error occurred while generating the AI response.';
+const generateAIresponse = async (UserMessage, TempChatHistory) => {
+  
+  try {
+    const response = await fetch(serverlink + '/generate_prompt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: UserMessage,
+        history: TempChatHistory,
+        expenses: (DataOption!='demo')? expenses:DemoData
+      }),
+    });
+    const completion = await response.text();
+    //console.log([{ role: 'system', content: "You are a helpful assistant. Respond concisely if the user content is not related to finance" },...TempChatHistory, UserMessage], "in gen AI");
+    setailoading(false)
+    return completion
+  } catch (error) {
+    setailoading(false)
+    console.error('Error generating AI response:', error);
+    if(!power)
+    {
+      return 'Sorry, I am currently connecting to the server. Please wait a few seconds until the profile icon turns green. In the meantime, please try the other features.'
     }
-  };
+    else
+      return 'Sorry, an error occurred while generating the AI response.';
+  }
+};
 
 const handleKeyup = (event) => {
     if (event.key === "Enter") {
@@ -107,7 +107,6 @@ return (
           ))}
           {ailoading && (
             <div
-            key="loading"
             style={{
                 borderRadius: '10px',
                 padding: '10px',
@@ -119,6 +118,26 @@ return (
             }}
             >
             Generating response...
+            </div>
+             )}
+            {(chatHistory.length==1) && (
+            <div
+            style={{
+              display: 'flex',  
+              alignSelf: 'center',
+              wordWrap: 'break-word',
+              maxWidth: '70%',
+              fontStyle: 'italic',
+              color: 'gray',
+              marginTop: 'auto',
+              textAlign: 'center'
+            }}
+            >
+            What is FinanceAI?<br />
+            Where should I reduce my spending?<br />
+            What is my biggest and lowest expense?<br />
+            How much did I spend in November?<br />
+            How much did I spend last week?<br />
             </div>
              )}
         </div>
