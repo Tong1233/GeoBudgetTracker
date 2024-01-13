@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPowerOff, faFeatherPointed } from '@fortawesome/free-solid-svg-icons';
+import { Data } from '@react-google-maps/api';
 library.add(faPowerOff, faFeatherPointed);
 
 const AIChat = ({chatHistory, addMessageToChat, user, expenses, IsSignedin, DemoData, power, serverlink, DataOption}) => {
@@ -32,7 +33,8 @@ const scrollToBottom = () => {
         },
         body: JSON.stringify({
           prompt: UserMessage,
-          history: TempChatHistory
+          history: TempChatHistory,
+          expenses: (DataOption!='demo')? expenses:DemoData
         }),
       });
       const completion = await response.text();

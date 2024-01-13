@@ -333,7 +333,7 @@ const GeoBudget = () => {
                 {/* Content */}
                 <div style={{ flex: 1, padding: '20px' }}>
                     <Routes>
-                        <Route path="/" element={<AIChat chatHistory={chatHistory} addMessageToChat={addMessageToChat} power={power} serverlink={serverlink} DataOption={DataOption}/>} />
+                        <Route path="/" element={<AIChat expenses={expenses} chatHistory={chatHistory} addMessageToChat={addMessageToChat} power={power} serverlink={serverlink} DataOption={DataOption} DemoData={DemoData}/>} />
                         <Route path="/DashBoard" element={<MainDashboard expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} DataOption={DataOption}/>} />
                         <Route path="/expenses" element={<ExpensesComponent expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} DataOption={DataOption} user={user} fetchExpenses={fetchExpenses} fetchLocalExpenses={fetchLocalExpenses}/>} />
                         <Route path="/expensestable" element={<ExpensesTable expenses = {expenses} setExpenses = {setExpensesCallback} IsSignedin={IsSignedin} DemoData={DemoData} setDemoData={setDemoData} serverlink={serverlink} DataOption={DataOption} fetchExpenses={fetchExpenses} fetchLocalExpenses={fetchLocalExpenses}/>} />
